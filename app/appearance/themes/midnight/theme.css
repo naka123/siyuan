@@ -22,7 +22,7 @@
     --b3-theme-on-error: #fff;
 
     /* 字体 */
-    --b3-font-family: "Emojis Additional", "Emojis Reset", BlinkMacSystemFont, Helvetica, "Luxi Sans", "DejaVu Sans", arial, sans-serif, emojis;
+    --b3-font-family: "Emojis Additional", "Emojis Reset", "IBM Plex Sans", BlinkMacSystemFont, Helvetica, sans-serif, emojis;
     --b3-font-family-protyle: var(--b3-font-family);
     --b3-font-family-code: "Emojis Additional", "Emojis Reset", "JetBrainsMono-Regular", mononoki, Consolas, "Liberation Mono", var(--b3-font-family);
     --b3-font-family-graph: arial;
