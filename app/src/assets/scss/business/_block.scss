@@ -7,7 +7,7 @@
     word-break: break-word;
     border-radius: var(--b3-border-radius-b);
     opacity: 0;
-    transition: opacity 75ms linear;
+    //transition: opacity 75ms linear;
     top: -100px;
     display: flex;
     flex-direction: column;
@@ -82,7 +82,7 @@
     display: flex;
     align-items: center;
     border-radius: var(--b3-border-radius);
-    transition: var(--b3-transition), opacity .3s cubic-bezier(0, 0, .2, 1) 0ms;
+    //transition: var(--b3-transition), opacity .3s cubic-bezier(0, 0, .2, 1) 0ms;
     line-height: 14px;
 
     &:hover:not([disabled]):not(.ft__primary):not(.block__icon--warning),
