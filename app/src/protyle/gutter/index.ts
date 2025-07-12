@@ -461,7 +461,8 @@ export class Gutter {
         const itemRect = item.getBoundingClientRect();
         // 原本为4，由于 https://github.com/siyuan-note/siyuan/issues/12166 改为 6
         let gutterTop = this.element.getBoundingClientRect().top + 6;
-        if (itemRect.height < Math.floor(window.siyuan.config.editor.fontSize * 1.625) + 8) {
+        const line_height_adj = Math.floor(window.siyuan.config.editor.fontSize * 1.625);
+        if (itemRect.height < line_height_adj + 8) {
             gutterTop = gutterTop - (itemRect.height - this.element.clientHeight) / 2;
         }
         return itemRect.top <= gutterTop && itemRect.bottom >= gutterTop;
@@ -2427,8 +2428,9 @@ data-type="fold" style="cursor:inherit;"><svg style="width: 10px${fold && fold =
             rect = nodeElement.getBoundingClientRect();
             space = 0;
         } else if (!element.classList.contains("av__row")) {
-            if (rect.height < Math.floor(window.siyuan.config.editor.fontSize * 1.625) + 8 ||
-                (rect.height > Math.floor(window.siyuan.config.editor.fontSize * 1.625) + 8 && rect.height < Math.floor(window.siyuan.config.editor.fontSize * 1.625) * 2 + 8)) {
+            const line_height_adj = Math.floor(window.siyuan.config.editor.fontSize * 1.625);
+            if (rect.height < line_height_adj + 8 ||
+                (rect.height > line_height_adj + 8 && rect.height < line_height_adj * 2 + 8)) {
                 marginHeight = (rect.height - this.element.clientHeight) / 2;
             } else if ((nodeElement.getAttribute("data-type") === "NodeAttributeView" || element.getAttribute("data-type") === "NodeAttributeView") &&
                 contentTop < rect.top) {
