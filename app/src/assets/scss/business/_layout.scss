@@ -18,7 +18,7 @@
   &__dockl,
   &__dockr,
   &__dockb {
-    transition: var(--b3-width-transition), height .2s cubic-bezier(0, 0, .2, 1) 0ms;
+    //transition: var(--b3-width-transition), height .2s cubic-bezier(0, 0, .2, 1) 0ms;
     flex-shrink: 0;
   }
 
@@ -29,7 +29,7 @@
   &--float {
     position: fixed;
     min-height: auto;
-    transition: transform .2s cubic-bezier(0, 0, .2, 1) 0ms, opacity .3s cubic-bezier(0, 0, .2, 1) 0ms;
+    //transition: transform .2s cubic-bezier(0, 0, .2, 1) 0ms, opacity .3s cubic-bezier(0, 0, .2, 1) 0ms;
 
     &.layout__dockl {
       border-radius: 0 var(--b3-border-radius-b) var(--b3-border-radius-b) 0;

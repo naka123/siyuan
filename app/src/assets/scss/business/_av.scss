@@ -307,7 +307,7 @@
       background-color: var(--b3-theme-surface);
       border-radius: var(--b3-border-radius) var(--b3-border-radius) 0 0;
       overflow: hidden;
-      transition: background 100ms ease-out;
+      //transition: background 100ms ease-out;
       position: relative;
       cursor: pointer;
 
@@ -378,7 +378,7 @@
     &-fields {
       border-radius: 0 0 var(--b3-border-radius) var(--b3-border-radius);
       flex: 1;
-      transition: background 100ms ease-out;
+      //transition: background 100ms ease-out;
       white-space: nowrap;
       font-size: 85%;
       min-height: 23px;
@@ -449,7 +449,7 @@
       align-items: center;
       color: var(--b3-theme-on-surface);
       cursor: pointer;
-      transition: background 100ms ease-out, color 100ms ease-out;
+      //transition: background 100ms ease-out, color 100ms ease-out;
       position: relative;
 
       &:hover {
