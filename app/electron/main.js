@@ -71,6 +71,9 @@ if (!app.requestSingleInstanceLock()) {
 
 app.setAsDefaultProtocolClient("siyuan");
 
+app.commandLine.appendSwitch("enable-lcd-text");
+app.commandLine.appendSwitch("disable-prefer-compositing-to-lcd-text");
+app.commandLine.appendSwitch("disable-gpu-driver-bug-workarounds");
 app.commandLine.appendSwitch("disable-web-security");
 app.commandLine.appendSwitch("auto-detect", "false");
 app.commandLine.appendSwitch("no-proxy-server");
