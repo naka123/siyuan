@@ -104,10 +104,14 @@
     --b3-font-background13: var(--b3-theme-on-background);
 
     /* 动画效果 */
-    --b3-transition: all .2s cubic-bezier(0, 0, .2, 1) 0ms;
-    --b3-width-transition: width .2s cubic-bezier(0, 0, .2, 1) 0ms;
-    --b3-color-transition: color .2s cubic-bezier(0, 0, .2, 1) 0ms;
-    --b3-background-transition: background 20ms ease-in 0s;
+    /*--b3-transition: all .2s cubic-bezier(0, 0, .2, 1) 0ms;*/
+    /*--b3-width-transition: width .2s cubic-bezier(0, 0, .2, 1) 0ms;*/
+    /*--b3-color-transition: color .2s cubic-bezier(0, 0, .2, 1) 0ms;*/
+    /*--b3-background-transition: background 20ms ease-in 0s;*/
+    --b3-transition: none;
+    --b3-width-transition: none;
+    --b3-color-transition: none;
+    --b3-background-transition: none;
 
     /* 高亮 */
     --b3-highlight-color: #222;

@@ -96,7 +96,7 @@
     }
 
     .b3-text-field {
-      transition: var(--b3-width-transition);
+      // transition: var(--b3-width-transition);
     }
   }
 
@@ -278,7 +278,7 @@
       position: relative;
 
       &::before {
-        transition: background 100ms ease-out;
+        // transition: background 100ms ease-out;
         content: "";
         inset: 0;
         position: absolute;
@@ -481,7 +481,7 @@
       align-items: center;
       color: var(--b3-theme-on-surface);
       cursor: pointer;
-      transition: background 100ms ease-out, color 100ms ease-out;
+      // transition: background 100ms ease-out, color 100ms ease-out;
       position: relative;
       font-size: 85%;
       padding: 4px 0;
@@ -503,7 +503,7 @@
       top: -13px;
       display: flex;
       opacity: 0;
-      transition: var(--b3-transition);
+      // transition: var(--b3-transition);
       z-index: 2;
     }
 
@@ -563,7 +563,7 @@
       font-size: 12px;
       flex: 1;
       cursor: pointer;
-      transition: var(--b3-transition);
+      // transition: var(--b3-transition);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -799,7 +799,7 @@
     width: 5px;
     height: 100%;
     right: -2.5px;
-    transition: var(--b3-background-transition);
+    // transition: var(--b3-background-transition);
     z-index: 1;
 
     &:hover {
@@ -860,7 +860,7 @@
       }
 
       &__item {
-        transition: margin .2s cubic-bezier(0, 0, .2, 1) 0ms;
+        // transition: margin .2s cubic-bezier(0, 0, .2, 1) 0ms;
 
         &[disabled] {
           opacity: .38;
@@ -965,7 +965,7 @@
     &-icon {
       cursor: pointer;
       color: var(--b3-theme-on-surface-light);
-      transition: var(--b3-transition), opacity 0.3s cubic-bezier(0, 0, 0.2, 1) 0ms;
+      // transition: var(--b3-transition), opacity 0.3s cubic-bezier(0, 0, 0.2, 1) 0ms;
       border-radius: var(--b3-border-radius);
 
       &:hover {
@@ -978,7 +978,7 @@
         float: left;
         width: calc(1.625em - 12px);
         height: calc(1.625em - 12px);
-        transition: transform 0.15s cubic-bezier(0, 0, 0.2, 1);
+        // transition: transform 0.15s cubic-bezier(0, 0, 0.2, 1);
         font-size: 87.5%;
       }
 
