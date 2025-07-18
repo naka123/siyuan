@@ -499,12 +499,6 @@ export class Background {
             this.actionElements[2].classList.remove("fn__none");
             this.iconElement.style.marginTop = "8px";
         }
-
-        if (img || icon) {
-            this.iconElement.parentElement.style.marginTop = "";
-        } else {
-            this.iconElement.parentElement.style.marginTop = "8px";
-        }
     }
 
     private openTag(protyle: IProtyle, target: HTMLElement) {
