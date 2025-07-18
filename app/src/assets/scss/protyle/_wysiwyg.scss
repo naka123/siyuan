@@ -135,6 +135,10 @@
         margin-left: 34px;
       }
 
+      & > [data-node-id].p {
+        padding: 0;
+      }
+
       & > [data-node-id]:not(.p):not(.code-block) {
         padding-right: 0;
       }
@@ -240,6 +244,7 @@
       display: flex;
       flex-direction: column;
       padding: 0;
+      padding-top: 8px;
       max-width: 100%;
 
       &[data-sb-layout="col"] {
