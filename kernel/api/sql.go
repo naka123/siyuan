@@ -48,7 +48,18 @@ func SQL(c *gin.Context) {
 	if !util.ParseJsonArgs(arg, ret, util.BindJsonArg("stmt", &stmt, true, true)) {
 		return
 	}
-	result, err := sql.Query(stmt, model.Conf.Search.Limit)
+	
+	limit := model.Conf.Search.Limit
+	if argLimit, ok := arg["limit"]; ok {
+		switch v := argLimit.(type) {
+		case float64:
+			limit = int(v)
+		case int:
+			limit = v
+		}
+	}
+	
+	result, err := sql.Query(stmt, limit)
 	if err != nil {
 		ret.Code = 1
 		ret.Msg = err.Error()
