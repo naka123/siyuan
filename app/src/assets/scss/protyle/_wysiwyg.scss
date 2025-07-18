@@ -171,7 +171,7 @@
         position: absolute;
         width: 34px;
         top: 0;
-        transition: var(--b3-transition);
+        //transition: var(--b3-transition);
         color: var(--b3-theme-on-surface);
         justify-content: center;
         display: flex;
@@ -197,7 +197,7 @@
           width: max(14px, 1em);
           margin: min(-7px, -.5em) 0 0 min(-7px, -.5em);
           border-radius: 50%;
-          transition: var(--b3-transition);
+          //transition: var(--b3-transition);
         }
 
         svg {
@@ -277,14 +277,14 @@
       padding-right: 1px;
       border-bottom: 1px solid;
       color: var(--b3-protyle-inline-tag-color);
-      transition: var(--b3-transition);
+      //transition: var(--b3-transition);
       cursor: pointer; // 预览导出无此元素，只读和编辑状态都需要点击 https://github.com/siyuan-note/siyuan/issues/11854
     }
 
     span[data-type~="a"] {
       color: var(--b3-protyle-inline-link-color);
       cursor: pointer;
-      transition: var(--b3-transition);
+      //transition: var(--b3-transition);
 
       &:hover {
         border-bottom: 1px solid;
@@ -303,7 +303,7 @@
 
     span[data-type="virtual-block-ref"] {
       border-bottom: 1px dashed var(--b3-theme-on-surface);
-      transition: var(--b3-transition);
+      //transition: var(--b3-transition);
 
       &:hover {
         border-color: var(--b3-theme-on-background);
@@ -318,7 +318,7 @@
     span[data-type~="file-annotation-ref"] {
       color: var(--b3-protyle-inline-blockref-color);
       opacity: .86;
-      transition: var(--b3-transition);
+      //transition: var(--b3-transition);
     }
 
     span[data-type~="file-annotation-ref"] {
@@ -436,7 +436,7 @@
         display: none;
         border-radius: var(--b3-border-radius);
         cursor: col-resize;
-        transition: var(--b3-transition);
+        //transition: var(--b3-transition);
         position: absolute;
         top: 35%;
         margin-left: -8px;
@@ -512,7 +512,7 @@
         display: none;
         border-radius: var(--b3-border-radius);
         cursor: nwse-resize;
-        transition: var(--b3-transition);
+        //transition: var(--b3-transition);
         position: absolute;
         right: -4px;
         bottom: 0;
@@ -558,7 +558,7 @@
   }
 
   &--hl {
-    transition: var(--b3-background-transition);
+    //transition: var(--b3-background-transition);
   }
 
   &--hiderange {
@@ -588,7 +588,7 @@
   }
 
   &--animate {
-    animation: bottom2Top .3s ease-in-out;
+    //animation: bottom2Top .3s ease-in-out;
   }
 
   div[data-type="NodeMathBlock"] {

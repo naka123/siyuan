@@ -47,7 +47,7 @@
       border-radius: var(--b3-border-radius);
       position: absolute;
       z-index: 1;
-      animation: 1s linear infinite keyframes-pulse;
+      //animation: 1s linear infinite keyframes-pulse;
       background: linear-gradient(90deg, transparent 0, rgba(255, 255, 255, .4) 50%, transparent 100%);
       display: block;
       height: 100%;
@@ -93,7 +93,7 @@
     }
 
     .b3-text-field {
-      transition: var(--b3-width-transition);
+      //transition: var(--b3-width-transition);
     }
   }
 
@@ -469,7 +469,7 @@
       top: 8px;
       display: flex;
       opacity: 0;
-      transition: var(--b3-transition);
+      //transition: var(--b3-transition);
       z-index: 2;
     }
 
@@ -529,7 +529,7 @@
       font-size: 12px;
       flex: 1;
       cursor: pointer;
-      transition: var(--b3-transition);
+      //transition: var(--b3-transition);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -782,7 +782,7 @@
     width: 5px;
     height: 100%;
     right: -2.5px;
-    transition: var(--b3-background-transition);
+    //transition: var(--b3-background-transition);
     z-index: 1;
 
     &:hover {

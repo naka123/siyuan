@@ -27,7 +27,7 @@
   box-sizing: border-box;
   padding: 8px 12px;
   border-radius: var(--b3-border-radius);
-  transition: var(--b3-transition);
+  //transition: var(--b3-transition);
   text-decoration: none;
 
   &--hover {
@@ -109,7 +109,7 @@
     border-radius: var(--b3-border-radius-b);
     height: 16px;
     width: 16px;
-    transition: var(--b3-transition);
+    //transition: var(--b3-transition);
     cursor: pointer;
     opacity: .68;
     flex-shrink: 0;

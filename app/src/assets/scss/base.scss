@@ -138,7 +138,7 @@ html {
     margin: 2px;
     border-radius: var(--b3-border-radius);
     box-sizing: border-box;
-    transition: var(--b3-transition);
+    //transition: var(--b3-transition);
     display: flex;
     align-self: center;
     background-color: transparent;
@@ -276,7 +276,7 @@ html {
         background-color: var(--b3-theme-primary-light);
         height: 4px;
         background-image: linear-gradient(-45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
-        animation: stripMove 450ms linear infinite;
+        //animation: stripMove 450ms linear infinite;
         background-size: 50px 50px;
       }
     }
@@ -314,13 +314,13 @@ html {
 
   &__close {
     min-height: auto;
-    transition: var(--b3-transition);
+    //transition: var(--b3-transition);
   }
 
   &__sliderDown {
     height: 0;
     overflow: hidden;
-    transition: var(--b3-transition);
+    //transition: var(--b3-transition);
   }
 }
 

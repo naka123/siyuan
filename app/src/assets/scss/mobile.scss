@@ -91,7 +91,7 @@
 .file-tree__sliderDown {
   height: 0;
   overflow: hidden;
-  transition: var(--b3-transition);
+  //transition: var(--b3-transition);
 }
 
 .counter {
@@ -482,7 +482,7 @@
 .status {
   position: fixed;
   bottom: -30px;
-  transition: var(--b3-transition);
+  //transition: var(--b3-transition);
   font-size: 12px;
   color: var(--b3-theme-on-surface);
   padding: 4px;

@@ -2,7 +2,7 @@
 
   &__avvalue {
     cursor: pointer;
-    transition: var(--b3-background-transition);
+    //transition: var(--b3-background-transition);
     border-radius: var(--b3-border-radius);
     padding: 4px 8px;
     line-height: 26px;
@@ -39,7 +39,7 @@
     .block__logo {
       color: var(--b3-protyle-inline-blockref-color);
       opacity: .86;
-      transition: var(--b3-transition);
+      //transition: var(--b3-transition);
 
       &:hover {
         cursor: pointer;
@@ -57,7 +57,7 @@
     width: 160px;
     color: var(--b3-theme-on-surface);
     border-radius: var(--b3-border-radius);
-    transition: var(--b3-background-transition);
+    //transition: var(--b3-background-transition);
     min-height: 34px;
     align-self: flex-start;
 
@@ -109,7 +109,7 @@
   }
 
   .b3-text-field--text {
-    transition: var(--b3-background-transition);
+    //transition: var(--b3-background-transition);
     min-height: 34px;
     background-color: transparent;
     padding: 7px 8px;

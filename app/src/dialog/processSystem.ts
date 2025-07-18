@@ -437,7 +437,7 @@ export const progressLoading = (data: IWebSocketData) => {
         progressElement.innerHTML = `<div class="b3-dialog__scrim" style="opacity: 1"></div>
 <div class="b3-dialog__loading">
     <div style="text-align: right">${data.data.current}/${data.data.total}</div>
-    <div style="margin: 8px 0;height: 8px;border-radius: var(--b3-border-radius);overflow: hidden;background-color:#fff;"><div style="width: ${data.data.current / data.data.total * 100}%;transition: var(--b3-transition);background-color: var(--b3-theme-primary);height: 8px;"></div></div>
+    <div style="margin: 8px 0;height: 8px;border-radius: var(--b3-border-radius);overflow: hidden;background-color:#fff;"><div style="width: ${data.data.current / data.data.total * 100}%;background-color: var(--b3-theme-primary);height: 8px;"></div></div>
     <div class="ft__breakword">${data.msg}</div>
 </div>`;
     } else if (data.code === 1) {
