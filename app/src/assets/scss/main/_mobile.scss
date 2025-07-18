@@ -68,7 +68,7 @@
 .file-tree__sliderDown {
   height: 0;
   overflow: hidden;
-  transition: var(--b3-transition);
+  // transition: var(--b3-transition);
 }
 
 .counter {
@@ -154,7 +154,7 @@
   width: 100vw;
   z-index: 7;
   transform: translateX(-100vw);
-  transition: transform .15s cubic-bezier(0, 0, .2, 1) 0ms;
+  // transition: transform .15s cubic-bezier(0, 0, .2, 1) 0ms;
 
   &--all {
     transform: translateY(-200vh);
@@ -170,7 +170,7 @@
   z-index: 6;
   background-color: #000;
   opacity: 0;
-  transition: opacity 150ms linear;
+  // transition: opacity 150ms linear;
 }
 
 #model {
@@ -459,7 +459,7 @@
 .status {
   position: fixed;
   bottom: -30px;
-  transition: var(--b3-transition);
+  // transition: var(--b3-transition);
   font-size: 12px;
   color: var(--b3-theme-on-surface);
   padding: 4px;

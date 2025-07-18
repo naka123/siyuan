@@ -19,7 +19,7 @@
 
   &__down,
   &__up {
-    transition: var(--b3-transition);
+    //transition: var(--b3-transition);
     position: absolute;
     opacity: 0;
     cursor: pointer;
@@ -109,7 +109,7 @@
     color: var(--b3-theme-on-surface-light);
     width: 14px;
     float: left;
-    transition: var(--b3-color-transition);
+    //transition: var(--b3-color-transition);
   }
 }
 
@@ -140,7 +140,7 @@
 
   &__space {
     min-width: 8px;
-    transition: var(--b3-transition);
+    //transition: var(--b3-transition);
     color: var(--b3-theme-on-surface);
     text-align: center;
     padding: 6px 0;
@@ -152,7 +152,7 @@
     align-items: center;
     flex-wrap: wrap;
     display: flex;
-    transition: var(--b3-transition);
+    //transition: var(--b3-transition);
     overflow: auto;
     min-height: 30px;
 
@@ -162,7 +162,7 @@
 
     &--hide {
       opacity: 0;
-      transition: 1s;
+      //transition: 1s;
     }
 
     &--nowrap {
@@ -252,16 +252,17 @@
   flex: 1;
   scrollbar-gutter: stable;
 
-  &--transition {
-    .protyle-wysiwyg {
-      transition: padding .3s cubic-bezier(.25, .46, .45, .94) 0ms;
-    }
+  //&--transition {
+  //  .protyle-wysiwyg {
+  //    transition: padding .3s cubic-bezier(.25, .46, .45, .94) 0ms;
+  //  }
 
-    .protyle-title,
-    .protyle-background__ia {
-      transition: margin .3s cubic-bezier(.25, .46, .45, .94) 0ms;
-    }
-  }
+  //  .protyle-title,
+  //  .protyle-background__ia {
+  //    transition: margin .3s cubic-bezier(.25, .46, .45, .94) 0ms;
+  //  }
+  //}
+  
 }
 
 .protyle-top:hover .protyle-background--enable {
@@ -293,14 +294,14 @@
   }
 
   &__action {
-    transition: opacity 150ms linear;
+    //transition: opacity 150ms linear;
     opacity: 0;
   }
 
   &__icon {
     height: 80px;
     width: 80px;
-    transition: opacity 150ms linear;
+    //transition: opacity 150ms linear;
     cursor: pointer;
     font-size: 68px; // 🔪显示不完整
     line-height: 80px;
@@ -374,7 +375,7 @@
     opacity: 0;
     margin: -15px 4px 0 0;
     padding: 8px 4px 8px 4px;
-    transition: var(--b3-transition);
+    //transition: var(--b3-transition);
     color: var(--b3-theme-on-surface-light);
     cursor: pointer;
     line-height: 20px;
@@ -397,7 +398,7 @@
     border: 0;
     font-size: 2em;
     font-weight: bold;
-    line-height: 1.625;
+    //line-height: 1.625;
     padding: 0 4px 0 2px;
     white-space: break-spaces;
 
@@ -443,14 +444,14 @@ table + .protyle-action__table {
       content: "";
       display: block;
       position: absolute;
-      transition: var(--b3-transition);
+      //transition: var(--b3-transition);
     }
   }
 
   .table__select {
     background: var(--b3-theme-primary-lightest);
     position: relative;
-    transition: var(--b3-transition);
+    //transition: var(--b3-transition);
     z-index: 3;
   }
 }
