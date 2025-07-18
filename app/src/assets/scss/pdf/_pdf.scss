@@ -54,10 +54,10 @@
     cursor: pointer;
 
     &--hl > div {
-      transition: opacity 1500ms linear;
-      animation-duration: 1s;
-      animation-fill-mode: both;
-      animation-name: fadeIn;
+      //transition: opacity 1500ms linear;
+      //animation-duration: 1s;
+      //animation-fill-mode: both;
+      //animation-name: fadeIn;
     }
 
     & > div {
@@ -281,7 +281,7 @@
   height: 100%;
   background-color: var(--b3-theme-primary-light);
   overflow: hidden;
-  transition: width 200ms;
+  //transition: width 200ms;
 }
 
 @keyframes progressIndeterminate {
@@ -295,7 +295,7 @@
 
 #loadingBar .progress.indeterminate {
   background-color: var(--b3-theme-on-surface);
-  transition: none;
+  //transition: none;
 }
 
 #loadingBar .progress.indeterminate .glimmer {
@@ -313,7 +313,7 @@
                   var(--b3-theme-primary-light) 95px,
                   var(--b3-theme-primary-lighter) 100px
   );
-  animation: progressIndeterminate 1s linear infinite;
+  //animation: progressIndeterminate 1s linear infinite;
 }
 
 .findbar {
@@ -559,7 +559,7 @@ a:focus > .thumbnail > .thumbnailSelectionRing,
   position: relative;
 
   .treeItemToggler {
-    transition: var(--b3-transition);
+    //transition: var(--b3-transition);
     height: 24px;
     width: 24px;
     cursor: pointer;
