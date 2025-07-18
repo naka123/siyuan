@@ -102,7 +102,7 @@
       line-height: 0;
       opacity: .48;
       overflow: hidden;
-      transition: opacity .15s;
+      //transition: opacity .15s;
       width: 30px;
 
       &:focus,
@@ -172,7 +172,7 @@
         float: left;
         height: 24px;
         overflow: hidden;
-        transition: background-color .15s;
+        //transition: background-color .15s;
         width: 24px;
 
         &:focus,
@@ -251,7 +251,7 @@
     opacity: 0.8;
     overflow: hidden;
     text-overflow: ellipsis;
-    transition: opacity 0.15s;
+    //transition: opacity 0.15s;
     white-space: nowrap;
 
     &:hover {
@@ -268,7 +268,7 @@
     position: absolute;
     right: -40px;
     top: -40px;
-    transition: background-color .15s;
+    //transition: background-color .15s;
     width: 80px;
     -webkit-app-region: no-drag;
 
@@ -327,7 +327,7 @@
   }
 
   &-transition {
-    transition: all .3s;
+    //transition: all .3s;
   }
 
   @keyframes viewer-spinner {
