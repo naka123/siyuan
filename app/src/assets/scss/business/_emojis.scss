@@ -30,7 +30,7 @@
       width: 73px;
       margin: 8px;
       cursor: pointer;
-      transition: var(--b3-transition);
+      //transition: var(--b3-transition);
 
       &:hover,
       &--current {
@@ -53,7 +53,7 @@
     padding: 4px;
     cursor: pointer;
     display: inline-block;
-    transition: var(--b3-transition);
+    //transition: var(--b3-transition);
     background-color: transparent;
     border: 0;
     margin: 1px;
@@ -97,7 +97,7 @@
     justify-content: center;
     height: 28px;
     line-height: 28px;
-    transition: var(--b3-list-hover);
+    //transition: var(--b3-list-hover);
     font-size: 16px;
     background-color: transparent;
     border: 0;
