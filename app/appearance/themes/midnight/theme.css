@@ -40,9 +40,9 @@
 
     /* 线条 */
     --b3-border-color: #363636;
-    --b3-border-radius: 6px;
+    --b3-border-radius: 4px;
     --b3-border-radius-s: 3px;
-    --b3-border-radius-b: 12px;
+    --b3-border-radius-b: 7px;
 
     /* 滚动条 */
     --b3-scroll-color: rgba(230, 230, 230, .2);
@@ -98,7 +98,7 @@
     --b3-font-background6: #08296c;
     --b3-font-background7: #593905;
     --b3-font-background8: #541812;
-    --b3-font-background9: #843473;
+    --b3-font-background9: #402c48;
     --b3-font-background10: #329096;
     --b3-font-background11: #568b2a;
     --b3-font-background12: #8d8829;
