@@ -326,7 +326,9 @@
   }
 
   .hljs {
-    font-size: 85%;
+    // для псевдографики
+    font-size: 15px;
+    line-height: 23px;
     overflow: auto;
     font-family: var(--b3-font-family-code);
     min-height: 22px !important;
@@ -336,7 +338,7 @@
   }
 
   div.hljs {
-    padding: 2em 1em 1.6em;
+    padding: 1.5em 0.25em 0;
     flex: 1;
     display: flex;
     position: relative;
