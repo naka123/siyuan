@@ -790,7 +790,7 @@ func enableLuteInlineSyntax(luteEngine *lute.Lute) {
 	luteEngine.SetInlineUnderscore(true)
 	luteEngine.SetSup(true)
 	luteEngine.SetSub(true)
-	luteEngine.SetTag(true)
+	luteEngine.SetTag(false)
 	luteEngine.SetInlineMath(true)
 	luteEngine.SetGFMStrikethrough(true)
 }
