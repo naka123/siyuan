@@ -137,7 +137,7 @@ export const initConfigSearch = (element: HTMLElement, app: App) => {
                 }
                 const type = item.getAttribute("data-name");
                 item.style.display = "";
-                if (["image", "bazaar", "account"].includes(type)) {
+                if (["image", "bazaar"].includes(type)) {
                     return;
                 }
                 // 右侧面板过滤
