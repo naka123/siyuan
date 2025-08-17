@@ -63,10 +63,10 @@
       background-color: transparent;
 
       .item__graphic {
-        height: calc(1.625em - 10px);
-        width: calc(1.625em - 10px);
-        padding: 10px 5px 10px 8px;
-        line-height: calc(1.625em - 10px);
+        height: calc(1.125em - 6px);
+        width: calc(1.125em - 6px);
+        padding: 6px 5px 6px 8px;
+        line-height: calc(1.125em - 6px);
         font-size: inherit;
         text-align: center;
       }
@@ -210,7 +210,7 @@
         overflow: hidden;
         font-size: 87.5%;
         white-space: nowrap;
-        line-height: 1.625em;
+        line-height: 1.125em;
         cursor: pointer;
 
         &[data-dtype="lineNumber"] {
@@ -228,7 +228,7 @@
 
         svg {
           margin-left: 5px;
-          height: 1.625em;
+          height: 1.125em;
           width: calc(1.625em - 14px);
         }
 
@@ -247,7 +247,7 @@
       display: flex;
 
       .b3-button {
-        margin: 5px 0 5px 1.625em;
+        margin: 5px 0 5px 1.125em;
       }
     }
   }
@@ -395,7 +395,7 @@
       .av__cell {
         padding: 2px 4px;
         border-right: 0;
-        min-height: calc(1.625em + 4px);
+        min-height: calc(1.125em + 4px);
 
         &:not([data-dtype="block"])[data-empty="true"] {
           padding: 0 4px;
@@ -427,7 +427,7 @@
 
       &--edit .av__cell {
         padding: 2px 4px !important;
-        min-height: calc(1.625em + 4px) !important;
+        min-height: calc(1.125em + 4px) !important;
 
         &[data-dtype="mAsset"][data-empty="true"],
         &[data-dtype="mSelect"][data-empty="true"],
@@ -479,7 +479,7 @@
       opacity: 0.38;
 
       img, svg {
-        height: calc(1.625em - 10px);
+        height: calc(1.125em - 6px);
         width: calc(1.625em - 10px);
         margin: 0 5px 0 0;
         font-size: 1em;
@@ -488,7 +488,7 @@
       span {
         width: calc(1.625em - 8px);
         margin: 0 5px 0 0;
-        height: 1.625em;
+        height: calc(1.125em - 6px);
         font-size: 1em;
       }
     }
@@ -577,7 +577,7 @@
     .b3-menu__avemoji {
       display: inline-block;
       font-size: 1em;
-      line-height: 1.625;
+      line-height: 1.125;
       height: auto;
       margin: 0 5px 0 -4px;
       vertical-align: top;

@@ -344,8 +344,8 @@ export const getPadding = (protyle: IProtyle) => {
             left = padding;
             right = padding;
         } else if (protyle.element.clientWidth > Constants.SIZE_EDITOR_WIDTH) {
-            left = 96;
-            right = 96;
+            left = 64;
+            right = 16;
         }
     }
     return {
