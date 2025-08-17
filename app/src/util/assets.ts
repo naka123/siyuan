@@ -199,7 +199,7 @@ export const initAssets = () => {
 };
 
 export const setInlineStyle = async (set = true) => {
-    const height = Math.floor(window.siyuan.config.editor.fontSize * 1.625);
+    const height = Math.floor(window.siyuan.config.editor.fontSize * 1.125);
     let style;
 
     // Emojis Reset: 字体中包含了 emoji，需重置
