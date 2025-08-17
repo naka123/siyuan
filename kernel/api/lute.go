@@ -153,6 +153,11 @@ func html2BlockDOM(c *gin.Context) {
 				return ast.WalkContinue
 			}
 
+			if strings.HasPrefix(localPath, "assets/") {
+				// Путь уже указывает на assets, копирование не требуется
+				return ast.WalkContinue
+			}
+
 			localPath = strings.TrimPrefix(localPath, "file://")
 			if gulu.OS.IsWindows() {
 				localPath = strings.TrimPrefix(localPath, "/")
