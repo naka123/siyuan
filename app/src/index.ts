@@ -3,7 +3,7 @@ import {Menus} from "./menus";
 import {Model} from "./layout/Model";
 import {onGetConfig} from "./boot/onGetConfig";
 import {initBlockPopover} from "./block/popover";
-import {account} from "./config/account";
+// import {account} from "./config/account";
 import {addScript, addScriptSync} from "./protyle/util/addScript";
 import {genUUID} from "./util/genID";
 import {fetchGet, fetchPost} from "./util/fetch";
@@ -216,7 +216,7 @@ export class App {
                     fetchPost("/api/setting/getCloudUser", {}, userResponse => {
                         window.siyuan.user = userResponse.data;
                         onGetConfig(response.data.start, this);
-                        account.onSetaccount();
+                        // account.onSetaccount();
                         setTitle("", true);
                         initMessage();
                         /// #if BROWSER && !MOBILE
