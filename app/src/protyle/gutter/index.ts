@@ -494,8 +494,10 @@ export class Gutter {
         const itemRect = item.getBoundingClientRect();
         // 原本为4，由于 https://github.com/siyuan-note/siyuan/issues/12166 改为 6
         let gutterTop = this.element.getBoundingClientRect().top + 6;
-        const line_height_adj = Math.floor(window.siyuan.config.editor.fontSize * 1.625);
+        const line_height_adj = Math.floor(window.siyuan.config.editor.fontSize * 1.125);
         if (itemRect.height < line_height_adj + 8) {
+            // gutterTop = gutterTop - 4; // соответствует marginHeight = -4 в render
+        } else if (itemRect.height > line_height_adj + 8 && itemRect.height < line_height_adj * 2 + 8) {
             gutterTop = gutterTop - (itemRect.height - this.element.clientHeight) / 2;
         }
         return itemRect.top <= gutterTop && itemRect.bottom >= gutterTop;
@@ -2695,6 +2697,11 @@ data-type="fold" style="cursor:inherit;"><svg style="width: 10px;${fold && fold 
         const contentTop = protyle.contentElement.getBoundingClientRect().top;
         let rect = element.getBoundingClientRect();
         let marginHeight = 0;
+        const line_height_adj = Math.floor(window.siyuan.config.editor.fontSize * 1.125);
+        if (rect.height < line_height_adj + 8) {
+            marginHeight = -4;
+        }
+        
         if (listItem && !window.siyuan.config.editor.rtl && getComputedStyle(element).direction !== "rtl") {
             rect = listItem.firstElementChild.getBoundingClientRect();
             space = 0;
@@ -2702,9 +2709,7 @@ data-type="fold" style="cursor:inherit;"><svg style="width: 10px;${fold && fold 
             rect = nodeElement.getBoundingClientRect();
             space = 0;
         } else if (!element.classList.contains("av__row")) {
-            const line_height_adj = Math.floor(window.siyuan.config.editor.fontSize * 1.625);
-            if (rect.height < line_height_adj + 8 ||
-                (rect.height > line_height_adj + 8 && rect.height < line_height_adj * 2 + 8)) {
+            if ((rect.height > line_height_adj + 8 && rect.height < line_height_adj * 2 + 8)) {
                 marginHeight = (rect.height - this.element.clientHeight) / 2;
             } else if ((nodeElement.getAttribute("data-type") === "NodeAttributeView" || element.getAttribute("data-type") === "NodeAttributeView") &&
                 contentTop < rect.top) {
