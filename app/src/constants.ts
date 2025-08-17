@@ -536,6 +536,7 @@ export abstract class Constants {
                 rtl: {default: "", custom: ""},
                 ltr: {default: "", custom: ""},
                 aiWriting: {default: "", custom: ""},
+                insertTimestampedBlock: {default: "⌥⇧D", custom: "⌥⇧D"},
                 openInNewTab: {default: "", custom: ""},
             },
             insert: {
