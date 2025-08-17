@@ -136,6 +136,7 @@ export const initStatus = (isWindow = false) => {
 let countRootId: string;
 let countTimeout: number;
 export const countSelectWord = (range: Range, rootID?: string) => {
+    return;
     /// #if !MOBILE
     if (document.getElementById("status").classList.contains("fn__none")) {
         return;
@@ -159,6 +160,7 @@ export const countSelectWord = (range: Range, rootID?: string) => {
 };
 
 export const countBlockWord = (ids: string[], rootID?: string, clearCache = false) => {
+    return;
     /// #if !MOBILE
     if (document.getElementById("status").classList.contains("fn__none")) {
         return;
