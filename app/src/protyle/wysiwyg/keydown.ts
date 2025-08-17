@@ -48,7 +48,7 @@ import {
 import {fontEvent} from "../toolbar/Font";
 import {addSubList, listIndent, listOutdent} from "./list";
 import {newFileContentBySelect, rename, replaceFileName} from "../../editor/rename";
-import {cancelSB, insertEmptyBlock, jumpToParent} from "../../block/util";
+import {cancelSB, insertEmptyBlock, insertTimestampedBlock, jumpToParent} from "../../block/util";
 import {isLocalPath} from "../../util/pathName";
 /// #if !MOBILE
 import {openBy, openFileById} from "../../editor/util";
@@ -1869,6 +1869,13 @@ export const keydown = (protyle: IProtyle, editorElement: HTMLElement) => {
                 });
                 blockPanel.destroy();
             });
+            return;
+        }
+
+        if (!event.repeat && matchHotKey(window.siyuan.config.keymap.editor.general.insertTimestampedBlock.custom, event)) {
+            event.preventDefault();
+            event.stopPropagation();
+            insertTimestampedBlock(protyle, nodeElement, range);
             return;
         }
 
