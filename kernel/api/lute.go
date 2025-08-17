@@ -158,6 +158,12 @@ func html2BlockDOM(c *gin.Context) {
 			if strings.HasPrefix(localPath, "http") {
 				return ast.WalkContinue
 			}
+
+            if strings.HasPrefix(localPath, "assets/") {
+				// Путь уже указывает на assets, копирование не требуется
+				return ast.WalkContinue
+			}
+
 			localPath = util.FileURLToLocalPath(localPath)
 			if !filepath.IsAbs(localPath) {
 				// Kernel crash when copy-pasting from some browsers https://github.com/siyuan-note/siyuan/issues/9203
