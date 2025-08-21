@@ -23,6 +23,8 @@ import (
 	"github.com/emirpasic/gods/stacks/linkedliststack"
 	"github.com/siyuan-note/siyuan/kernel/treenode"
 	"github.com/siyuan-note/siyuan/kernel/util"
+	"strconv"
+	"time"
 )
 
 func (tx *Transaction) doMoveOutlineHeading(operation *Operation) (ret *TxErr) {
@@ -313,4 +315,232 @@ func resetDepth(b *Block, depth int) {
 	for _, c := range b.Children {
 		resetDepth(c, depth+1)
 	}
+}
+
+func CollectTimestampedAIBlocks(rootID string, preview bool) (ret []*Path, err error) {
+	FlushTxQueue()
+
+	ret = []*Path{}
+	tree, _ := LoadTreeByBlockID(rootID)
+	if nil == tree {
+		return
+	}
+
+	ret = collectTimestampedAI(tree)
+	return
+}
+
+func collectTimestampedAI(tree *parse.Tree) (ret []*Path) {
+	// Сбор блоков с timestamp
+	timestampedBlocks := collectTimestampedBlocks(tree)
+
+	// Группировка по датам
+	ret = groupTimestampedBlocksByDate(timestampedBlocks)
+
+	return
+}
+
+// Структура для хранения Path с метаданными времени
+type timestampedPath struct {
+	path      *Path
+	timestamp int64
+	remainder string
+}
+
+func collectTimestampedBlocks(tree *parse.Tree) []*timestampedPath {
+	luteEngine := NewLute()
+	var timestampedPaths []*timestampedPath
+
+	// Проходим по прямым детям root
+	for n := tree.Root.FirstChild; nil != n; n = n.Next {
+		if ast.NodeSuperBlock != n.Type {
+			continue
+		}
+
+		// Проверяем наличие атрибута custom-timestamp
+		timestampStr := n.IALAttr("custom-timestamp")
+		if "" == timestampStr {
+			continue
+		}
+
+		// Получаем remainder если есть
+		remainder := n.IALAttr("custom-timestamp-remainder")
+
+		// Парсим timestamp
+		timestamp, err := strconv.ParseInt(timestampStr, 10, 64)
+		if err != nil {
+			continue
+		}
+
+		blockTime := time.Unix(timestamp, 0)
+		formattedTime := blockTime.Format("02-Jan-06 15:04")
+		if "" != remainder {
+			formattedTime = formattedTime + " <strong><i>" + remainder + "</i></strong>"
+		}
+
+		// Создаём Path для SuperBlock
+		superPath := &Path{
+			ID:       n.ID,
+			Box:      tree.Box,
+			Name:     formattedTime,
+			NodeType: n.Type.String(),
+			Type:     "timestamp-ai",
+			SubType:  treenode.SubTypeAbbr(n),
+			Blocks:   []*Block{}, // Используем Blocks для хранения дочерних блоков
+		}
+
+		// Ищем вложенные blockquote
+		ast.Walk(n, func(child *ast.Node, entering bool) ast.WalkStatus {
+			if !entering {
+				return ast.WalkContinue
+			}
+
+			if ast.NodeBlockquote != child.Type {
+				return ast.WalkContinue
+			}
+
+			aiBlock := &Block{
+				ID:      child.ID,
+				Box:     tree.Box,
+				Content: renderOutline(child, luteEngine),
+				Type:    child.Type.String(),
+				SubType: treenode.SubTypeAbbr(child),
+				Depth:   1,
+			}
+			superPath.Blocks = append(superPath.Blocks, aiBlock)
+
+			return ast.WalkContinue
+		})
+
+		superPath.Count = len(superPath.Blocks)
+
+		// Добавляем в список с метаданными
+		timestampedPaths = append(timestampedPaths, &timestampedPath{
+			path:      superPath,
+			timestamp: timestamp,
+			remainder: remainder,
+		})
+	}
+
+	return timestampedPaths
+}
+
+func groupTimestampedBlocksByDate(timestampedBlocks []*timestampedPath) []*Path {
+	var ret []*Path
+
+	// Группируем блоки по датам используя time.Time
+	type dateGroup struct {
+		date   time.Time
+		blocks []*timestampedPath
+	}
+	dateGroups := make(map[string]*dateGroup)
+	var dates []string // для сохранения порядка
+
+	for _, block := range timestampedBlocks {
+		blockTime := time.Unix(block.timestamp, 0)
+		// Получаем дату без времени (начало дня)
+		dateOnly := time.Date(blockTime.Year(), blockTime.Month(), blockTime.Day(), 0, 0, 0, 0, blockTime.Location())
+		dateKey := dateOnly.Format("2006-01-02")
+
+		if _, exists := dateGroups[dateKey]; !exists {
+			dates = append(dates, dateKey)
+			dateGroups[dateKey] = &dateGroup{
+				date:   dateOnly,
+				blocks: []*timestampedPath{},
+			}
+		}
+		dateGroups[dateKey].blocks = append(dateGroups[dateKey].blocks, block)
+	}
+
+	// Преобразуем в формат Path с группировкой
+	for _, dateKey := range dates {
+		group := dateGroups[dateKey]
+		blocks := group.blocks
+
+		if len(blocks) > 1 {
+			// Создаем родительский Path для группы с одинаковой датой
+			groupPath := &Path{
+				ID:       blocks[0].path.ID, // ID первого блока в группе
+				Box:      blocks[0].path.Box,
+				Name:     group.date.Format("02-Jan-06"), // Форматируем дату для отображения
+				NodeType: "Group",
+				Type:     "timestamp-ai",
+				SubType:  "",
+				Blocks:   []*Block{}, // Используем Blocks вместо Children
+				Depth:    0,
+				Count:    0,
+			}
+
+			// Добавляем первым дочерним элементом дубликат с временем первого блока
+			firstBlockTime := time.Unix(blocks[0].timestamp, 0)
+			firstTimeDisplay := firstBlockTime.Format("15:04")
+			if "" != blocks[0].remainder {
+				firstTimeDisplay = firstTimeDisplay + " <strong><i>" + blocks[0].remainder + "</i></strong>"
+			}
+
+			firstTimeBlock := &Block{
+				ID:       blocks[0].path.ID,
+				Box:      blocks[0].path.Box,
+				Content:  firstTimeDisplay,
+				Type:     blocks[0].path.NodeType,
+				SubType:  blocks[0].path.SubType,
+				Children: adjustBlockChildrenDepth(blocks[0].path.Blocks, 2),
+				Depth:    1,
+				Count:    blocks[0].path.Count,
+			}
+			groupPath.Blocks = append(groupPath.Blocks, firstTimeBlock)
+			groupPath.Count++
+
+			// Добавляем остальные блоки со временем (начиная со второго)
+			for i := 1; i < len(blocks); i++ {
+				block := blocks[i]
+				blockTime := time.Unix(block.timestamp, 0)
+				timeDisplay := blockTime.Format("15:04")
+				if "" != block.remainder {
+					timeDisplay = timeDisplay + " <strong><i>" + block.remainder + "</i></strong>"
+				}
+
+				timeBlock := &Block{
+					ID:       block.path.ID,
+					Box:      block.path.Box,
+					Content:  timeDisplay,
+					Type:     block.path.NodeType,
+					SubType:  block.path.SubType,
+					Children: adjustBlockChildrenDepth(block.path.Blocks, 2),
+					Depth:    1,
+					Count:    block.path.Count,
+				}
+				groupPath.Blocks = append(groupPath.Blocks, timeBlock)
+				groupPath.Count++
+			}
+
+			ret = append(ret, groupPath)
+		} else if len(blocks) == 1 {
+			// Одиночный блок без группировки - показываем полный timestamp
+			ret = append(ret, blocks[0].path)
+		}
+	}
+
+	return ret
+}
+
+// Рекурсивно увеличивает глубину всех дочерних блоков
+func adjustBlockChildrenDepth(children []*Block, newDepth int) []*Block {
+	if len(children) == 0 {
+		return nil
+	}
+	adjusted := make([]*Block, len(children))
+	for i, child := range children {
+		adjusted[i] = &Block{
+			ID:       child.ID,
+			Box:      child.Box,
+			Content:  child.Content,
+			Type:     child.Type,
+			SubType:  child.SubType,
+			Children: adjustBlockChildrenDepth(child.Children, newDepth+1),
+			Depth:    newDepth,
+			Count:    child.Count,
+		}
+	}
+	return adjusted
 }
