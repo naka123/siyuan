@@ -1994,43 +1994,43 @@ export class Gutter {
             this.genWidths([nodeElement], protyle);
             // this.genHeights([nodeElement], protyle);
         }
-        window.siyuan.menus.menu.append(new MenuItem({id: "separator_4", type: "separator"}).element);
-        if (window.siyuan.config.cloudRegion === 0 &&
-            !["NodeThematicBreak", "NodeBlockQueryEmbed", "NodeIFrame", "NodeHTMLBlock", "NodeWidget", "NodeVideo", "NodeAudio"].includes(type) &&
-            getContenteditableElement(nodeElement)?.textContent.trim() !== "" &&
-            (type !== "NodeCodeBlock" || (type === "NodeCodeBlock" && !nodeElement.getAttribute("data-subtype")))) {
-            window.siyuan.menus.menu.append(new MenuItem({
-                id: "wechatReminder",
-                icon: "iconMp",
-                label: window.siyuan.languages.wechatReminder,
-                ignore: window.siyuan.config.readonly,
-                click() {
-                    openWechatNotify(nodeElement);
-                }
-            }).element);
-        }
-        if (type !== "NodeThematicBreak" && !window.siyuan.config.readonly) {
-            const isCardMade = nodeElement.hasAttribute(Constants.CUSTOM_RIFF_DECKS);
-            window.siyuan.menus.menu.append(new MenuItem({
-                id: isCardMade ? "removeCard" : "quickMakeCard",
-                icon: "iconRiffCard",
-                label: isCardMade ? window.siyuan.languages.removeCard : window.siyuan.languages.quickMakeCard,
-                accelerator: window.siyuan.config.keymap.editor.general.quickMakeCard.custom,
-                click() {
-                    quickMakeCard(protyle, [nodeElement]);
-                }
-            }).element);
-            window.siyuan.menus.menu.append(new MenuItem({
-                id: "addToDeck",
-                label: window.siyuan.languages.addToDeck,
-                ignore: !window.siyuan.config.flashcard.deck,
-                icon: "iconRiffCard",
-                click() {
-                    makeCard(protyle.app, [id]);
-                }
-            }).element);
-            window.siyuan.menus.menu.append(new MenuItem({id: "separator_5", type: "separator"}).element);
-        }
+        // window.siyuan.menus.menu.append(new MenuItem({id: "separator_4", type: "separator"}).element);
+        // if (window.siyuan.config.cloudRegion === 0 &&
+        //     !["NodeThematicBreak", "NodeBlockQueryEmbed", "NodeIFrame", "NodeHTMLBlock", "NodeWidget", "NodeVideo", "NodeAudio"].includes(type) &&
+        //     getContenteditableElement(nodeElement)?.textContent.trim() !== "" &&
+        //     (type !== "NodeCodeBlock" || (type === "NodeCodeBlock" && !nodeElement.getAttribute("data-subtype")))) {
+        //     window.siyuan.menus.menu.append(new MenuItem({
+        //         id: "wechatReminder",
+        //         icon: "iconMp",
+        //         label: window.siyuan.languages.wechatReminder,
+        //         ignore: window.siyuan.config.readonly,
+        //         click() {
+        //             openWechatNotify(nodeElement);
+        //         }
+        //     }).element);
+        // }
+        // if (type !== "NodeThematicBreak" && !window.siyuan.config.readonly) {
+        //     const isCardMade = nodeElement.hasAttribute(Constants.CUSTOM_RIFF_DECKS);
+        //     window.siyuan.menus.menu.append(new MenuItem({
+        //         id: isCardMade ? "removeCard" : "quickMakeCard",
+        //         icon: "iconRiffCard",
+        //         label: isCardMade ? window.siyuan.languages.removeCard : window.siyuan.languages.quickMakeCard,
+        //         accelerator: window.siyuan.config.keymap.editor.general.quickMakeCard.custom,
+        //         click() {
+        //             quickMakeCard(protyle, [nodeElement]);
+        //         }
+        //     }).element);
+        //     window.siyuan.menus.menu.append(new MenuItem({
+        //         id: "addToDeck",
+        //         label: window.siyuan.languages.addToDeck,
+        //         ignore: !window.siyuan.config.flashcard.deck,
+        //         icon: "iconRiffCard",
+        //         click() {
+        //             makeCard(protyle.app, [id]);
+        //         }
+        //     }).element);
+        //     window.siyuan.menus.menu.append(new MenuItem({id: "separator_5", type: "separator"}).element);
+        // }
 
         if (protyle?.app?.plugins) {
             emitOpenMenu({
