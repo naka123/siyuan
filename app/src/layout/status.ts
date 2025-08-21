@@ -203,6 +203,7 @@ export const renderStatusbarCounter = (stat: {
     refCount: number,
     blockCount: number,
 }) => {
+    return;
     if (!stat) {
         return;
     }
