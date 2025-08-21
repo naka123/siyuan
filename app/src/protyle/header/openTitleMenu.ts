@@ -136,60 +136,60 @@ export const openTitleMenu = (protyle: IProtyle, position: IPosition, from: stri
                     }
                 }).element);
             }
-            const isCardMade = !!response.data.ial[Constants.CUSTOM_RIFF_DECKS];
-            const riffCardMenu: IMenu[] = [{
-                id: "spaceRepetition",
-                iconHTML: "",
-                label: window.siyuan.languages.spaceRepetition,
-                accelerator: window.siyuan.config.keymap.editor.general.spaceRepetition.custom,
-                click: () => {
-                    fetchPost("/api/riff/getTreeRiffDueCards", {rootID: protyle.block.rootID}, (response) => {
-                        openCardByData(protyle.app, response.data, "doc", protyle.block.rootID, response.data.name);
-                    });
-                }
-            }, {
-                id: "manage",
-                iconHTML: "",
-                label: window.siyuan.languages.manage,
-                click: () => {
-                    fetchPost("/api/filetree/getHPathByID", {
-                        id: protyle.block.rootID
-                    }, (response) => {
-                        viewCards(protyle.app, protyle.block.rootID, pathPosix().join(getNotebookName(protyle.notebookId), (response.data)), "Tree");
-                    });
-                }
-            }, {
-                id: isCardMade ? "removeCard" : "quickMakeCard",
-                iconHTML: "",
-                label: isCardMade ? window.siyuan.languages.removeCard : window.siyuan.languages.quickMakeCard,
-                accelerator: window.siyuan.config.keymap.editor.general.quickMakeCard.custom,
-                click: () => {
-                    let titleElement = protyle.title?.element;
-                    if (!titleElement) {
-                        titleElement = document.createElement("div");
-                        titleElement.setAttribute("data-node-id", protyle.block.rootID);
-                        titleElement.setAttribute(Constants.CUSTOM_RIFF_DECKS, response.data.ial[Constants.CUSTOM_RIFF_DECKS]);
-                    }
-                    quickMakeCard(protyle, [titleElement]);
-                }
-            }];
-            if (window.siyuan.config.flashcard.deck) {
-                riffCardMenu.push({
-                    id: "addToDeck",
-                    iconHTML: "",
-                    label: window.siyuan.languages.addToDeck,
-                    click: () => {
-                        makeCard(protyle.app, [protyle.block.rootID]);
-                    }
-                });
-            }
-            window.siyuan.menus.menu.append(new MenuItem({
-                id: "riffCard",
-                label: window.siyuan.languages.riffCard,
-                type: "submenu",
-                icon: "iconRiffCard",
-                submenu: riffCardMenu,
-            }).element);
+            // const isCardMade = !!response.data.ial[Constants.CUSTOM_RIFF_DECKS];
+            // const riffCardMenu: IMenu[] = [{
+            //     id: "spaceRepetition",
+            //     iconHTML: "",
+            //     label: window.siyuan.languages.spaceRepetition,
+            //     accelerator: window.siyuan.config.keymap.editor.general.spaceRepetition.custom,
+            //     click: () => {
+            //         fetchPost("/api/riff/getTreeRiffDueCards", {rootID: protyle.block.rootID}, (response) => {
+            //             openCardByData(protyle.app, response.data, "doc", protyle.block.rootID, response.data.name);
+            //         });
+            //     }
+            // }, {
+            //     id: "manage",
+            //     iconHTML: "",
+            //     label: window.siyuan.languages.manage,
+            //     click: () => {
+            //         fetchPost("/api/filetree/getHPathByID", {
+            //             id: protyle.block.rootID
+            //         }, (response) => {
+            //             viewCards(protyle.app, protyle.block.rootID, pathPosix().join(getNotebookName(protyle.notebookId), (response.data)), "Tree");
+            //         });
+            //     }
+            // }, {
+            //     id: isCardMade ? "removeCard" : "quickMakeCard",
+            //     iconHTML: "",
+            //     label: isCardMade ? window.siyuan.languages.removeCard : window.siyuan.languages.quickMakeCard,
+            //     accelerator: window.siyuan.config.keymap.editor.general.quickMakeCard.custom,
+            //     click: () => {
+            //         let titleElement = protyle.title?.element;
+            //         if (!titleElement) {
+            //             titleElement = document.createElement("div");
+            //             titleElement.setAttribute("data-node-id", protyle.block.rootID);
+            //             titleElement.setAttribute(Constants.CUSTOM_RIFF_DECKS, response.data.ial[Constants.CUSTOM_RIFF_DECKS]);
+            //         }
+            //         quickMakeCard(protyle, [titleElement]);
+            //     }
+            // }];
+            // if (window.siyuan.config.flashcard.deck) {
+            //     riffCardMenu.push({
+            //         id: "addToDeck",
+            //         iconHTML: "",
+            //         label: window.siyuan.languages.addToDeck,
+            //         click: () => {
+            //             makeCard(protyle.app, [protyle.block.rootID]);
+            //         }
+            //     });
+            // }
+            // window.siyuan.menus.menu.append(new MenuItem({
+            //     id: "riffCard",
+            //     label: window.siyuan.languages.riffCard,
+            //     type: "submenu",
+            //     icon: "iconRiffCard",
+            //     submenu: riffCardMenu,
+            // }).element);
         }
         window.siyuan.menus.menu.append(new MenuItem({
             id: "search",
