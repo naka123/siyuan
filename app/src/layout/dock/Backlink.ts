@@ -595,14 +595,15 @@ export class Backlink extends Model {
                 backlinkMOpenIds: [],
                 backlinkMStatus: 3
             };
+            // авто-раскрыв backlinks и backmentions не нужен
             if (data.mentionsCount === 0 || window.siyuan.config.editor.backmentionExpandCount === -1) {
                 this.status[this.blockId].backlinkMStatus = 3;
-            } else {
-                Array.from({length: window.siyuan.config.editor.backmentionExpandCount}).forEach((item, index) => {
-                    if (data.backmentions[index]) {
-                        this.status[this.blockId].backlinkMOpenIds.push(data.backmentions[index].id);
-                    }
-                });
+            } else {                
+                // Array.from({length: window.siyuan.config.editor.backmentionExpandCount}).forEach((item, index) => {
+                //     if (data.backmentions[index]) {
+                //         this.status[this.blockId].backlinkMOpenIds.push(data.backmentions[index].id);
+                //     }
+                // });
                 if (data.mentionsCount === 0) {
                     this.status[this.blockId].backlinkMStatus = 3;
                 } else {
@@ -613,13 +614,13 @@ export class Backlink extends Model {
                     }
                 }
             }
-            if (data.linkRefsCount > 0) {
-                Array.from({length: window.siyuan.config.editor.backlinkExpandCount}).forEach((item, index) => {
-                    if (data.backlinks[index]) {
-                        this.status[this.blockId].backlinkOpenIds.push(data.backlinks[index].id);
-                    }
-                });
-            }
+            // if (data.linkRefsCount > 0) {
+            //     Array.from({length: window.siyuan.config.editor.backlinkExpandCount}).forEach((item, index) => {
+            //         if (data.backlinks[index]) {
+            //             this.status[this.blockId].backlinkOpenIds.push(data.backlinks[index].id);
+            //         }
+            //     });
+            // }
         }
 
         // restore status
