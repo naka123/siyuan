@@ -458,6 +458,10 @@ func SubTypeAbbr(n *ast.Node) string {
 		if 6 == n.HeadingLevel {
 			return "h6"
 		}
+	case ast.NodeBlockquote:
+		if "" != n.IALAttr("custom-ai-generated") {
+			return "ai"
+		}
 	}
 	return ""
 }
