@@ -2470,9 +2470,16 @@ export class Gutter {
                 if (protyle.options.backlinkData) {
                     popoverHTML = `class="popover__block" data-id="${dataNodeId}"`;
                 }
+                let subtype = nodeElement.getAttribute("data-subtype");
+                if (type == "NodeBlockquote") {
+                    
+                    if (nodeElement.getAttribute("custom-ai-generated")) {
+                        subtype = "ai";
+                    }
+                }
                 const buttonHTML = `<button class="ariaLabel" data-position="parentW" aria-label="${gutterTip}" 
-data-type="${type}" data-subtype="${nodeElement.getAttribute("data-subtype")}" data-node-id="${dataNodeId}">
-    <svg><use xlink:href="#${getIconByType(type, nodeElement.getAttribute("data-subtype"))}"></use></svg>
+data-type="${type}" data-subtype="${subtype}" data-node-id="${dataNodeId}">
+    <svg><use xlink:href="#${getIconByType(type, subtype)}"></use></svg>
     <span ${popoverHTML} ${protyle.disabled ? "" : 'draggable="true"'}></span>
 </button>`;
                 if (!hideParent) {
