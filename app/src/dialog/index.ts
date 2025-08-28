@@ -73,13 +73,13 @@ left:${left || "auto"};top:${top || "auto"}">
             });
         }
         document.body.append(this.element);
-        if (options.disableAnimation) {
+        // if (options.disableAnimation) {
             this.element.classList.add("b3-dialog--open");
-        } else {
-            setTimeout(() => {
-                this.element.classList.add("b3-dialog--open");
-            }, Constants.TIMEOUT_OPENDIALOG);
-        }
+        // } else {
+        //     setTimeout(() => {
+        //         this.element.classList.add("b3-dialog--open");
+        //     }, Constants.TIMEOUT_OPENDIALOG);
+        // }
         /// #if !MOBILE
         moveResize(this.element.querySelector(".b3-dialog__container"), options.resizeCallback);
         /// #endif
@@ -87,7 +87,7 @@ left:${left || "auto"};top:${top || "auto"}">
 
     public destroy(options?: IObject) {
         this.element.classList.remove("b3-dialog--open");
-        setTimeout(() => {
+        // setTimeout(() => {
             // av 修改列头emoji后点击关闭emoji图标
             if ((this.element.querySelector(".b3-dialog") as HTMLElement).style.zIndex < window.siyuan.menus.menu.element.style.zIndex) {
                 // https://github.com/siyuan-note/siyuan/issues/6783
@@ -105,7 +105,7 @@ left:${left || "auto"};top:${top || "auto"}">
             });
             // https://github.com/siyuan-note/siyuan/issues/10475
             document.getElementById("drag")?.classList.remove("fn__hidden");
-        }, Constants.TIMEOUT_DBLCLICK);
+        // }, Constants.TIMEOUT_DBLCLICK);
     }
 
     public bindInput(inputElement: HTMLInputElement | HTMLTextAreaElement, enterEvent?: () => void, bindEnter = true) {
