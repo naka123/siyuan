@@ -18,7 +18,7 @@ export const getIconByType = (type: string, sub?: string) => {
             }
             break;
         case "NodeBlockquote":
-            iconName = "iconQuote";
+            iconName = sub === "ai" ? "iconSparkles" : "iconQuote";
             break;
         case "NodeCallout":
             iconName = "iconCallout";
