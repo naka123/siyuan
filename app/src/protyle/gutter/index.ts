@@ -2477,6 +2477,12 @@ export class Gutter {
                         subtype = "ai";
                     }
                 }
+                if (type == "NodeSuperBlock") {
+
+                    if (nodeElement.getAttribute("custom-timestamp")) {
+                        subtype = "ts";
+                    }
+                }
                 const buttonHTML = `<button class="ariaLabel" data-position="parentW" aria-label="${gutterTip}" 
 data-type="${type}" data-subtype="${subtype}" data-node-id="${dataNodeId}">
     <svg><use xlink:href="#${getIconByType(type, subtype)}"></use></svg>

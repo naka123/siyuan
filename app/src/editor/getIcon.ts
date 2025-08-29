@@ -43,7 +43,7 @@ export const getIconByType = (type: string, sub?: string) => {
             iconName = "iconSQL";
             break;
         case "NodeSuperBlock":
-            iconName = "iconSuper";
+            iconName = sub === "ts" ? "iconClock" : "iconSuper";
             break;
         case "NodeMathBlock":
             iconName = "iconMath";
