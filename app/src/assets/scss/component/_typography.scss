@@ -125,6 +125,19 @@
     }
   }
 
+  .sb[custom-timestamp] {
+    &::before {
+      content: '';
+      background-color: var(--b3-theme-primary-lightest);
+      width: .15em;
+      border-radius: var(--b3-border-radius);
+      position: absolute;
+      left: -6px;
+      top: 2px;
+      bottom: 0px;
+    }
+  }
+
   blockquote {
     position: relative;
   }

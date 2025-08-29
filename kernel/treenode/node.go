@@ -462,6 +462,10 @@ func SubTypeAbbr(n *ast.Node) string {
 		if "" != n.IALAttr("custom-ai-generated") {
 			return "ai"
 		}
+	case ast.NodeSuperBlock:
+		if "" != n.IALAttr("custom-timestamp") {
+			return "ts"
+		}
 	}
 	return ""
 }
