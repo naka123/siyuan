@@ -9,6 +9,7 @@ import {openFile, openFileById} from "../editor/util";
 import {showMessage} from "../dialog/message";
 import {reloadProtyle} from "../protyle/util/reload";
 import {MenuItem} from "../menus/Menu";
+import {Plugin} from "../plugin";
 import {getDisplayName, getNotebookIcon, getNotebookName, movePathTo, pathPosix, useShell} from "../util/pathName";
 import {Protyle} from "../protyle";
 import {onGet} from "../protyle/util/onGet";
@@ -48,6 +49,94 @@ import {highlightById} from "../util/highlightById";
 import {getSelectionOffset} from "../protyle/util/selection";
 import {electronUndo} from "../protyle/undo";
 import {getContenteditableElement} from "../protyle/wysiwyg/getBlock";
+
+export function pluginSearchInDocuments(app: App, query: string, replace: boolean) {
+    const pluginName = "syplugin-document-search";
+    const FLAT_DOC_TREE_DOCK_TYPE = "flat_doc_tree_dock";
+    let plugin: Plugin = null;
+    for (const p of window.siyuan.ws.app.plugins) {
+        if (p.name === pluginName) {
+            plugin = p;
+            break;
+        }
+    }
+
+    if (!plugin) {
+        console.error("Плагин 'syplugin-document-search' не найден");
+        return;
+    }
+
+    // Найти док панель по имени
+    const searchDock = plugin.docks["syplugin-document-searchdoc_search_dock"];
+    if (!searchDock) {
+        console.error("Док панель поиска не найдена");
+        return;
+    }
+
+
+    let openFlatDocCommand = null;
+    for (const cmd1 of plugin.commands) {
+        if (cmd1.langKey == "flat_doc_tree_dock_mapkey") {
+            openFlatDocCommand = cmd1;
+            break;
+        }
+    }
+    
+    // FIXME! переделать проверку на открытость сайдбар-панели
+    const dock = document.querySelector("div.sy__syplugin-document-searchflat_doc_tree_dock");
+    // console.log("dock", dock);
+    if (!dock) {
+        const ele = document.querySelector(
+            `span[data-type="${plugin.name + FLAT_DOC_TREE_DOCK_TYPE}"]`,
+        ) as HTMLElement;
+        console.log("ele", ele);
+        if (ele) {
+            ele.click();
+        }
+        // try {
+        //     openFlatDocCommand.callback();
+        // } catch (e) {
+        //     console.log(e);
+        // }
+    }
+
+    // const dock111 = document.querySelector("div.flat_doc_tree--top");
+    // console.log("dock111", dock111);
+    // dock111.dispatchEvent(new CustomEvent<string>("search", query);
+
+    const input = document.querySelector("div.flat_doc_tree--top input");
+    // console.log("input", input);
+    if (input) {
+        if (replace) {
+            input.value = query;
+        } else {
+            const old_query: string = input.value || "";
+            // Разбиваем текущее значение на элементы через пробельные символы
+            const elements = old_query.split(/\s+/).filter(el => el.length > 0);
+            const queryIndex = elements.indexOf(query);
+            
+            if (queryIndex === -1) {
+                // Элемент не найден - добавляем
+                elements.push(query);
+            } else {
+                // Элемент найден - удаляем
+                elements.splice(queryIndex, 1);
+            }
+            
+            input.value = elements.join(" ");
+        }
+        input.dispatchEvent(new Event("input", {bubbles: true}));
+
+        setTimeout(() => {
+            input.dispatchEvent(new KeyboardEvent("keydown", {
+                key: "Enter",
+                keyCode: 13,
+                bubbles: true
+            }));
+        }, 0);
+    }
+}
+
 
 export const openGlobalSearch = (app: App, text: string, replace: boolean, searchData?: Config.IUILayoutTabSearchConfig) => {
     text = text.trim();
