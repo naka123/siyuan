@@ -5,7 +5,7 @@ import {setPanelFocus} from "../util";
 import {getDockByType} from "../tabUtil";
 import {fetchPost} from "../../util/fetch";
 import {updateHotkeyAfterTip} from "../../protyle/util/compatibility";
-import {openGlobalSearch} from "../../search/util";
+import {openGlobalSearch, pluginSearchInDocuments} from "../../search/util";
 import {MenuItem} from "../../menus/Menu";
 import {App} from "../../index";
 import {openTagMenu} from "../../menus/tag";
@@ -88,7 +88,8 @@ export class Tag extends Model {
                         return;
                     }
                 }
-                openGlobalSearch(app, `#${element.getAttribute("data-label")}#`, !window.siyuan.ctrlIsPressed, {method: 0});
+                // openGlobalSearch(app, `#${element.getAttribute("data-label")}#`, !window.siyuan.ctrlIsPressed, {method: 0});
+                pluginSearchInDocuments(app, `#${element.getAttribute("data-label")}#`, !window.siyuan.ctrlIsPressed);
             },
             rightClick: (element: HTMLElement, event: MouseEvent) => {
                 openTagMenu(element, event, element.getAttribute("data-label"));
