@@ -2555,19 +2555,7 @@ export class Gutter {
                 if (protyle.options.backlinkData) {
                     popoverHTML = `class="popover__block" data-id="${dataNodeId}"`;
                 }
-                let subtype = nodeElement.getAttribute("data-subtype");
-                if (type == "NodeBlockquote") {
-                    
-                    if (nodeElement.getAttribute("custom-ai-generated")) {
-                        subtype = "ai";
-                    }
-                }
-                if (type == "NodeSuperBlock") {
-
-                    if (nodeElement.getAttribute("custom-timestamp")) {
-                        subtype = "ts";
-                    }
-                }
+                const subtype = nodeElement.getAttribute("data-subtype");
                 const buttonHTML = `<button class="ariaLabel" data-position="parentW" aria-label="${gutterTip}" 
 data-type="${type}" data-subtype="${subtype}" data-node-id="${dataNodeId}">
     <svg><use xlink:href="#${getIconByType(type, subtype)}"></use></svg>
