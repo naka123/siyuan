@@ -409,8 +409,21 @@ func collectTimestampedAI(tree *parse.Tree) (ret []*Path) {
 	timestampedBlocks := collectTimestampedBlocks(tree)
 
 	// Группировка по датам
-	timestampedPaths := groupTimestampedBlocksByDate(timestampedBlocks)
-	ret = append(ret, timestampedPaths...)
+	timestampedPaths := groupTimestampedBlocksByDate(timestampedBlocks, 1)
+
+	// Оборачиваем хронологические блоки в отдельную папку
+	if len(timestampedPaths) > 0 {
+		chronoFolder := &Path{
+			ID:       "chrono-folder",
+			Name:     "Chronological",
+			NodeType: "Folder",
+			SubType:  "",
+			Children: timestampedPaths,
+			Depth:    0,
+			Count:    len(timestampedPaths),
+		}
+		ret = append(ret, chronoFolder)
+	}
 
 	return
 }
@@ -612,7 +625,7 @@ func collectTimestampedBlocks(tree *parse.Tree) []*timestampedPath {
 	return timestampedPaths
 }
 
-func groupTimestampedBlocksByDate(timestampedBlocks []*timestampedPath) []*Path {
+func groupTimestampedBlocksByDate(timestampedBlocks []*timestampedPath, initialDepth int) []*Path {
 	var ret []*Path
 
 	// Группируем блоки по датам используя time.Time
@@ -654,7 +667,7 @@ func groupTimestampedBlocksByDate(timestampedBlocks []*timestampedPath) []*Path 
 				Type:     "timestamp-ai",
 				SubType:  "",
 				Blocks:   []*Block{}, // Используем Blocks вместо Children
-				Depth:    0,
+				Depth:    initialDepth,
 				Count:    0,
 			}
 
@@ -671,8 +684,8 @@ func groupTimestampedBlocksByDate(timestampedBlocks []*timestampedPath) []*Path 
 				Content:  firstTimeDisplay,
 				Type:     blocks[0].path.NodeType,
 				SubType:  blocks[0].path.SubType,
-				Children: adjustBlockChildrenDepth(blocks[0].path.Blocks, 2),
-				Depth:    1,
+				Children: adjustBlockChildrenDepth(blocks[0].path.Blocks, initialDepth+2),
+				Depth:    initialDepth + 1,
 				Count:    blocks[0].path.Count,
 			}
 			groupPath.Blocks = append(groupPath.Blocks, firstTimeBlock)
@@ -693,8 +706,8 @@ func groupTimestampedBlocksByDate(timestampedBlocks []*timestampedPath) []*Path 
 					Content:  timeDisplay,
 					Type:     block.path.NodeType,
 					SubType:  block.path.SubType,
-					Children: adjustBlockChildrenDepth(block.path.Blocks, 2),
-					Depth:    1,
+					Children: adjustBlockChildrenDepth(block.path.Blocks, initialDepth+2),
+					Depth:    initialDepth + 1,
 					Count:    block.path.Count,
 				}
 				groupPath.Blocks = append(groupPath.Blocks, timeBlock)
