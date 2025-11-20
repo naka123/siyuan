@@ -22,9 +22,11 @@ import (
 	"github.com/88250/lute/html"
 	"github.com/88250/lute/parse"
 	"github.com/emirpasic/gods/stacks/linkedliststack"
+	"github.com/siyuan-note/siyuan/kernel/av"
 	"github.com/siyuan-note/siyuan/kernel/treenode"
 	"github.com/siyuan-note/siyuan/kernel/util"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -397,13 +399,132 @@ func CollectTimestampedAIBlocks(rootID string, preview bool) (ret []*Path, err e
 }
 
 func collectTimestampedAI(tree *parse.Tree) (ret []*Path) {
+	// Сначала собираем блоки с AV и алиасами
+	avAliasBlocks := collectAVAndAliasBlocks(tree)
+	if len(avAliasBlocks) > 0 && avAliasBlocks[0].Count > 0 {
+		ret = append(ret, avAliasBlocks...)
+	}
+
 	// Сбор блоков с timestamp
 	timestampedBlocks := collectTimestampedBlocks(tree)
 
 	// Группировка по датам
-	ret = groupTimestampedBlocksByDate(timestampedBlocks)
+	timestampedPaths := groupTimestampedBlocksByDate(timestampedBlocks)
+	ret = append(ret, timestampedPaths...)
 
 	return
+}
+
+func collectAVAndAliasBlocks(tree *parse.Tree) []*Path {
+	luteEngine := NewLute()
+
+	// Карта для группировки блоков по AV
+	avGroups := make(map[string][]*Block)
+	var aliasOnlyBlocks []*Block
+
+	// Проходим по всем блокам дерева
+	ast.Walk(tree.Root, func(n *ast.Node, entering bool) ast.WalkStatus {
+		if !entering {
+			return ast.WalkContinue
+		}
+
+		// Проверяем наличие custom-avs или alias
+		avs := n.IALAttr("custom-avs")
+		alias := n.IALAttr("alias")
+
+		if "" == avs && "" == alias {
+			return ast.WalkContinue
+		}
+
+		// Определяем содержимое для отображения
+		displayContent := ""
+		if "" != alias {
+			displayContent = alias
+		}
+
+		// Если нет алиаса, берем краткое содержимое блока
+		if "" == displayContent {
+			blockContent := renderOutline(n, luteEngine)
+			if "" != blockContent && len(blockContent) > 50 {
+				blockContent = blockContent[:50] + "..."
+			}
+			displayContent = blockContent
+		}
+
+		block := &Block{
+			ID:      n.ID,
+			Box:     tree.Box,
+			Content: displayContent,
+			Type:    n.Type.String(),
+			SubType: treenode.SubTypeAbbr(n),
+			Depth:   1,
+		}
+
+		if "" != avs {
+			// Разбираем custom-avs по запятым и добавляем блок в каждую группу
+			avIDs := strings.Split(avs, ",")
+			for _, avID := range avIDs {
+				avID = strings.TrimSpace(avID)
+				if "" == avID {
+					continue
+				}
+
+				// Получаем имя AV
+				avName, err := av.GetAttributeViewName(avID)
+				if nil != err {
+					avName = avID // Используем ID если не удалось получить имя
+				}
+				if "" == avName {
+					avName = Conf.language(105) // "Untitled"
+				}
+
+				// Добавляем блок в группу для этого AV
+				avGroups[avName] = append(avGroups[avName], block)
+			}
+		} else {
+			// Блок только с алиасом
+			aliasOnlyBlocks = append(aliasOnlyBlocks, block)
+		}
+
+		return ast.WalkContinue
+	})
+
+	var result []*Path
+
+	// Создаем Path для каждого AV
+	for avName, blocks := range avGroups {
+		avPath := &Path{
+			ID:     blocks[0].ID, // ID первого блока в группе
+			Box:    blocks[0].Box,
+			Name:   avName,
+			Type:   "av-group",
+			Blocks: blocks,
+			Count:  len(blocks),
+			Depth:  0,
+		}
+		result = append(result, avPath)
+	}
+
+	// Создаем отдельный Path для алиасов без AV
+	if len(aliasOnlyBlocks) > 0 {
+		aliasPath := &Path{
+			ID:     aliasOnlyBlocks[0].ID,
+			Box:    aliasOnlyBlocks[0].Box,
+			Name:   "Aliases",
+			Type:   "alias-group",
+			Blocks: aliasOnlyBlocks,
+			Count:  len(aliasOnlyBlocks),
+			Depth:  0,
+		}
+		result = append(result, aliasPath)
+	}
+
+	// Если ничего не нашли, возвращаем пустой результат
+	if len(result) == 0 {
+		return []*Path{{ID: "av-alias-table", Name: "AV & Aliases", Type: "av-alias", Blocks: []*Block{}, Count: 0}}
+	}
+
+	return result
 }
 
 // Структура для хранения Path с метаданными времени
