@@ -316,6 +316,7 @@ var (
 	SiYuanAssetsImage = []string{".apng", ".ico", ".cur", ".jpg", ".jpe", ".jpeg", ".jfif", ".pjp", ".pjpeg", ".png", ".gif", ".webp", ".bmp", ".svg", ".avif"}
 	SiYuanAssetsAudio = []string{".mp3", ".wav", ".ogg", ".m4a", ".flac"}
 	SiYuanAssetsVideo = []string{".mov", ".weba", ".mkv", ".mp4", ".webm"}
+	SiYuanAssetsOther = []string{".pdf"}
 )
 
 func IsAssetsImage(assetPath string) bool {
@@ -351,6 +352,9 @@ func IsDisplayableAsset(p string) bool {
 		return true
 	}
 	if gulu.Str.Contains(ext, SiYuanAssetsVideo) {
+		return true
+	}
+	if gulu.Str.Contains(ext, SiYuanAssetsOther) {
 		return true
 	}
 	return false
