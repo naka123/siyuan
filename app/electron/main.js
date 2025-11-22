@@ -633,9 +633,9 @@ const initKernel = (workspace, port, lang) => {
         if (lang && "" !== lang) {
             cmds.push("--lang", lang);
         }
-        let cmd = `ui version [${appVer}], booting kernel [${kernelPath} ${cmds.join(" ")}]`;
+        let cmd = `ui version [${appVer}], kernel [${kernelPath} ${cmds.join(" ")}]`;
         writeLog(cmd);
-        if (!isDevEnv || workspaces.length > 0) {
+        if ((!isDevEnv || workspaces.length > 0)) {
             const cp = require("child_process");
             const kernelProcess = cp.spawn(kernelPath, cmds, {
                 detached: false, // 桌面端内核进程不再以游离模式拉起 https://github.com/siyuan-note/siyuan/issues/6336
