@@ -59,6 +59,8 @@ func execNewVerInstallPkg(newVerInstallPkgPath string) {
 }
 
 func getNewVerInstallPkgPath() string {
+	return ""
+
 	if skipNewVerInstallPkg() {
 		return ""
 	}
@@ -80,6 +82,8 @@ func getNewVerInstallPkgPath() string {
 var checkDownloadInstallPkgLock = sync.Mutex{}
 
 func checkDownloadInstallPkg() {
+	return
+
 	defer logging.Recover()
 
 	if skipNewVerInstallPkg() {
@@ -120,6 +124,8 @@ func checkDownloadInstallPkg() {
 }
 
 func getUpdatePkg() (downloadPkgURLs []string, checksum string, err error) {
+	return
+
 	defer logging.Recover()
 	result, err := util.GetRhyResult(context.TODO(), false)
 	if err != nil {
@@ -247,6 +253,8 @@ type Announcement struct {
 }
 
 func getAnnouncements() (ret []*Announcement) {
+    return
+
 	result, err := util.GetRhyResult(context.TODO(), false)
 	if err != nil {
 		logging.LogErrorf("get announcement failed: %s", err)
@@ -271,6 +279,8 @@ func getAnnouncements() (ret []*Announcement) {
 }
 
 func CheckUpdate(showMsg bool) {
+	return
+
 	if !showMsg {
 		return
 	}
@@ -302,6 +312,8 @@ func CheckUpdate(showMsg bool) {
 }
 
 func isVersionUpToDate(releaseVer string) bool {
+	return true
+
 	return semver.Compare("v"+releaseVer, "v"+util.Ver) <= 0
 }
 
@@ -309,6 +321,8 @@ func isVersionUpToDate(releaseVer string) bool {
 var skipInstallPkgPlatformCached = -1
 
 func skipNewVerInstallPkg() bool {
+	return true
+
 	if skipInstallPkgPlatformCached == -1 {
 		skipInstallPkgPlatformCached = 0
 		if !gulu.OS.IsWindows() && !gulu.OS.IsDarwin() {
