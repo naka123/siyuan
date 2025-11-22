@@ -57,6 +57,7 @@ func execNewVerInstallPkg(newVerInstallPkgPath string) {
 var newVerInstallPkgPath string
 
 func getNewVerInstallPkgPath() string {
+	return ""
 	if skipNewVerInstallPkg() {
 		newVerInstallPkgPath = ""
 		return ""
@@ -81,6 +82,7 @@ func getNewVerInstallPkgPath() string {
 var checkDownloadInstallPkgLock = sync.Mutex{}
 
 func checkDownloadInstallPkg() {
+	return
 	defer logging.Recover()
 
 	if skipNewVerInstallPkg() {
@@ -113,6 +115,7 @@ func checkDownloadInstallPkg() {
 }
 
 func getUpdatePkg() (downloadPkgURLs []string, checksum string, err error) {
+	return
 	defer logging.Recover()
 	result, err := util.GetRhyResult(false)
 	if err != nil {
@@ -258,6 +261,7 @@ func getAnnouncements() (ret []*Announcement) {
 }
 
 func CheckUpdate(showMsg bool) {
+	return
 	if !showMsg {
 		return
 	}
@@ -304,6 +308,7 @@ func isVersionUpToDate(releaseVer string) bool {
 }
 
 func skipNewVerInstallPkg() bool {
+	return true
 	if !gulu.OS.IsWindows() && !gulu.OS.IsDarwin() {
 		return true
 	}
