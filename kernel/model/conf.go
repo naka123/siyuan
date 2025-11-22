@@ -700,7 +700,7 @@ func Close(force, setCurrentWorkspace bool, execInstallPkg int) (exitCode int) {
 			if gulu.OS.IsWindows() {
 				util.PushMsg(Conf.Language(130), 1000*30)
 			}
-			go execNewVerInstallPkg(newVerInstallPkgPath)
+			//go execNewVerInstallPkg(newVerInstallPkgPath)
 		} else if 0 == execInstallPkg { // 新版本安装包已经准备就绪
 			exitCode = 2
 			logging.LogInfof("the new version install pkg is ready [%s], waiting for the user's next instruction", newVerInstallPkgPath)
@@ -941,12 +941,14 @@ func InitBoxes() {
 }
 
 func IsSubscriber() bool {
+	return true
 	u := Conf.GetUser()
 	return nil != u && (-1 == u.UserSiYuanProExpireTime || 0 < u.UserSiYuanProExpireTime) && 0 == u.UserSiYuanSubscriptionStatus
 }
 
 func IsPaidUser() bool {
 	// S3/WebDAV data sync and backup are available for a fee https://github.com/siyuan-note/siyuan/issues/8780
+	return true
 
 	if IsSubscriber() {
 		return true
