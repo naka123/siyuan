@@ -188,7 +188,7 @@ export const insertEmptyBlock = (protyle: IProtyle, position: InsertPosition, id
         });
     }
     focusByWbr(protyle.wysiwyg.element, range);
-    scrollCenter(protyle);
+    // scrollCenter(protyle);
 };
 
 export const genEmptyBlock = (zwsp = true, wbr = true, string?: string) => {
