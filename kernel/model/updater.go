@@ -120,6 +120,8 @@ func checkDownloadInstallPkg() {
 }
 
 func getUpdatePkg() (downloadPkgURLs []string, checksum string, err error) {
+	return
+
 	defer logging.Recover()
 	result, err := util.GetRhyResult(context.TODO(), false)
 	if err != nil {
@@ -247,6 +249,8 @@ type Announcement struct {
 }
 
 func getAnnouncements() (ret []*Announcement) {
+	return
+
 	result, err := util.GetRhyResult(context.TODO(), false)
 	if err != nil {
 		logging.LogErrorf("get announcement failed: %s", err)
@@ -271,6 +275,8 @@ func getAnnouncements() (ret []*Announcement) {
 }
 
 func CheckUpdate(showMsg bool) {
+	return
+
 	if !showMsg {
 		return
 	}
@@ -302,6 +308,8 @@ func CheckUpdate(showMsg bool) {
 }
 
 func isVersionUpToDate(releaseVer string) bool {
+	return true
+
 	return semver.Compare("v"+releaseVer, "v"+util.Ver) <= 0
 }
 
@@ -309,6 +317,13 @@ func isVersionUpToDate(releaseVer string) bool {
 var skipInstallPkgPlatformCached = -1
 
 func skipNewVerInstallPkg() bool {
+
+	// Conf.System.DownloadInstallPkg(自动下载更新安装包) 强制赋值为false
+	if Conf.System.DownloadInstallPkg {
+		Conf.System.DownloadInstallPkg = false
+		Conf.Save()
+	}
+
 	if skipInstallPkgPlatformCached == -1 {
 		skipInstallPkgPlatformCached = 0
 		if !gulu.OS.IsWindows() && !gulu.OS.IsDarwin() {
