@@ -333,12 +333,12 @@ export class Outline extends Model {
                     if (hasChange) {
                         this.element.setAttribute("data-loading", "true");
                         transaction(editor, [{
-                            action: "moveOutlineHeading",
+                            action: "move",
                             id: item.dataset.nodeId,
                             previousID,
                             parentID,
                         }], [{
-                            action: "moveOutlineHeading",
+                            action: "move",
                             id: item.dataset.nodeId,
                             previousID: undoPreviousID,
                             parentID: undoParentID,
