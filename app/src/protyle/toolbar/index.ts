@@ -1812,10 +1812,10 @@ ${item.name}
             });
         }
 
-        if (!Constants.SIYUAN_RENDER_CODE_LANGUAGES.includes(currentLang)) {
-            window.siyuan.storage[Constants.LOCAL_CODELANG] = currentLang;
-            setStorageVal(Constants.LOCAL_CODELANG, window.siyuan.storage[Constants.LOCAL_CODELANG]);
-        }
+        // if (!Constants.SIYUAN_RENDER_CODE_LANGUAGES.includes(currentLang)) {
+        //     window.siyuan.storage[Constants.LOCAL_CODELANG] = currentLang;
+        //     setStorageVal(Constants.LOCAL_CODELANG, window.siyuan.storage[Constants.LOCAL_CODELANG]);
+        // }
         const doOperations: IOperation[] = [];
         const undoOperations: IOperation[] = [];
         languageElements.forEach(item => {
