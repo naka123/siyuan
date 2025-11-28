@@ -197,6 +197,13 @@ func moveOutlineHeading(c *gin.Context) {
 		return
 	}
 
+	currentBt := treenode.GetBlockTree(id)
+	if nil == currentBt {
+		ret.Code = -1
+		ret.Msg = "block not found [id=" + id + "]"
+		return
+	}
+
 	var parentID, previousID string
 	if nil != arg["parentID"] {
 		parentID = arg["parentID"].(string)
@@ -209,13 +216,32 @@ func moveOutlineHeading(c *gin.Context) {
 		if "" != previousID && util.InvalidIDPattern(previousID, ret) {
 			return
 		}
+
+		if bt := treenode.GetBlockTree(previousID); nil == bt || "d" == bt.Type {
+			ret.Code = -1
+			ret.Msg = "`previousID` can not be the ID of a document"
+			return
+		}
+	}
+
+	var targetBt *treenode.BlockTree
+	if "" != previousID {
+		targetBt = treenode.GetBlockTree(previousID)
+	} else if "" != parentID {
+		targetBt = treenode.GetBlockTree(parentID)
+	}
+
+	if nil == targetBt {
+		ret.Code = -1
+		ret.Msg = "target block not found [id=" + parentID + "]"
+		return
 	}
 
 	transactions := []*model.Transaction{
 		{
 			DoOperations: []*model.Operation{
 				{
-					Action:     "moveOutlineHeading",
+					Action:     "move",
 					ID:         id,
 					PreviousID: previousID,
 					ParentID:   parentID,
@@ -227,8 +253,10 @@ func moveOutlineHeading(c *gin.Context) {
 	model.PerformTransactions(&transactions)
 	model.FlushTxQueue()
 
-	ret.Data = transactions
-	broadcastTransactions(transactions)
+	model.ReloadProtyle(currentBt.RootID)
+	if currentBt.RootID != targetBt.RootID {
+		model.ReloadProtyle(targetBt.RootID)
+	}
 }
 
 func appendDailyNoteBlock(c *gin.Context) {
