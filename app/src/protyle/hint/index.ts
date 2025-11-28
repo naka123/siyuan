@@ -739,9 +739,9 @@ ${genHintItemHTML(item)}
                     this.fixImageCursor(range);
                 }
                 let textContent = value;
-                if (value === "```") {
-                    textContent = value + (Constants.SIYUAN_RENDER_CODE_LANGUAGES.includes(window.siyuan.storage[Constants.LOCAL_CODELANG]) ? "" : window.siyuan.storage[Constants.LOCAL_CODELANG]) + Lute.Caret + "\n```";
-                }
+                // if (value === "```") {
+                //     textContent = value + (Constants.SIYUAN_RENDER_CODE_LANGUAGES.includes(window.siyuan.storage[Constants.LOCAL_CODELANG]) ? "" : window.siyuan.storage[Constants.LOCAL_CODELANG]) + Lute.Caret + "\n```";
+                // }
                 const editableElement = getContenteditableElement(nodeElement);
                 if (value === "![]()") { // https://github.com/siyuan-note/siyuan/issues/4586 1
                     let newHTML = "";

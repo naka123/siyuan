@@ -1737,10 +1737,10 @@ ${item.name}
 
     private updateLanguage(languageElement: HTMLElement[], protyle: IProtyle, selectedLang: string) {
         const currentLang = selectedLang === window.siyuan.languages.clear ? "" : selectedLang;
-        if (!Constants.SIYUAN_RENDER_CODE_LANGUAGES.includes(currentLang)) {
-            window.siyuan.storage[Constants.LOCAL_CODELANG] = currentLang;
-            setStorageVal(Constants.LOCAL_CODELANG, window.siyuan.storage[Constants.LOCAL_CODELANG]);
-        }
+        // if (!Constants.SIYUAN_RENDER_CODE_LANGUAGES.includes(currentLang)) {
+        //     window.siyuan.storage[Constants.LOCAL_CODELANG] = currentLang;
+        //     setStorageVal(Constants.LOCAL_CODELANG, window.siyuan.storage[Constants.LOCAL_CODELANG]);
+        // }
         const doOperations: IOperation[] = [];
         const undoOperations: IOperation[] = [];
         languageElement.forEach(item => {
