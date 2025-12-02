@@ -11,6 +11,7 @@ import {fetchPost, fetchSyncPost} from "../util/fetch";
 import {openFileById} from "../editor/util";
 import {openMobileFileById} from "../mobile/editor";
 import {mathRender} from "../protyle/render/mathRender";
+import * as dayjs from "dayjs";
 
 export const cancelSB = async (protyle: IProtyle, nodeElement: Element, range?: Range) => {
     const doOperations: IOperation[] = [];
@@ -188,6 +189,162 @@ export const insertEmptyBlock = (protyle: IProtyle, position: InsertPosition, id
             type: "BlocksMergeSuperBlock",
             level: "row"
         });
+    }
+    focusByWbr(protyle.wysiwyg.element, range);
+    scrollCenter(protyle);
+};
+
+/**
+ * insertTimestampedBlock - создание "timestamped" записи (блока с меткой времени)
+ * 
+ * ПРАКТИЧЕСКИЙ СМЫСЛ:
+ * Функция предназначена для ведения журнала/лога записей с автоматической меткой времени.
+ * При вызове создаётся суперблок (row layout) с заголовком-датой, куда перемещается
+ * текущий блок и все последующие блоки (если они находились в том же суперблоке).
+ * 
+ * ЛОГИКА РАБОТЫ:
+ * 1. Получает текущую дату в формате "DD-MMM-YY HH:mm" и unix timestamp
+ * 
+ * 2. Определяет targetElement - самый верхний "одиночный" блок (через getTopAloneElement),
+ *    затем поднимается вверх по DOM до границы protyle-wysiwyg или NodeSuperBlock
+ * 
+ * 3. Определяет точку вставки (insertAfterElement):
+ *    - Если targetElement внутри суперблока -> вставка после этого суперблока
+ *    - Иначе -> вставка после самого targetElement
+ * 
+ * 4. Собирает elementsToMove: targetElement + все его siblings до конца суперблока
+ *    (если targetElement был внутри суперблока)
+ * 
+ * 5. Создаёт новый суперблок (ts-superblock) с атрибутами:
+ *    - data-sb-layout="row"
+ *    - custom-timestamp="{unix_timestamp}"
+ *    - data-subtype="ts"
+ * 
+ * 6. Добавляет параграф с форматированной датой в начало ts-superblock
+ * 
+ * 7. Формирует транзакцию: insert ts-superblock + move всех elementsToMove внутрь
+ * 
+ * 8. Синхронизирует DOM с базой (перемещает элементы в DOM вручную, т.к. transaction
+ *    обновляет только БД, а DOM обновляется при перезагрузке страницы)
+ * 
+ * 9. Устанавливает фокус на targetElement (который теперь внутри ts-superblock)
+ */
+export const insertTimestampedBlock = (protyle: IProtyle, nodeElement: HTMLElement, range: Range) => {
+    const currentDate = dayjs().format("DD-MMM-YY HH:mm");
+    const timestamp = Math.floor(Date.now() / 1000);
+    
+    const blockElement = getTopAloneElement(nodeElement);
+    if (!blockElement) {
+        return;
+    }
+    // Find the topmost non-superblock ancestor (child of document or child of superblock)
+    let targetElement = blockElement;
+    while (targetElement.parentElement && !targetElement.parentElement.classList.contains("protyle-wysiwyg")) {
+        const parent = targetElement.parentElement;
+        if (parent.getAttribute("data-type") !== "NodeSuperBlock") {
+            targetElement = parent;
+        } else {
+            break;
+        }
+    }
+    
+    // If targetElement is inside a superblock, insert ts-superblock after that superblock
+    // Otherwise insert after targetElement itself
+    const parentSuperBlock = targetElement.parentElement?.getAttribute("data-type") === "NodeSuperBlock" 
+        ? targetElement.parentElement 
+        : null;
+    const insertAfterElement = parentSuperBlock || targetElement;
+    
+    // Collect all elements to move (from targetElement to end of superblock)
+    const elementsToMove: HTMLElement[] = [targetElement as HTMLElement];
+    if (parentSuperBlock) {
+        let nextSibling = targetElement.nextElementSibling;
+        while (nextSibling && !nextSibling.classList.contains("protyle-attr")) {
+            elementsToMove.push(nextSibling as HTMLElement);
+            nextSibling = nextSibling.nextElementSibling;
+        }
+    }
+    
+    const blockId = targetElement.getAttribute("data-node-id");
+    const previousId = insertAfterElement.getAttribute("data-node-id");
+    const parentId = insertAfterElement.parentElement.getAttribute("data-node-id") || protyle.block.parentID || protyle.block.rootID;
+    // Create timestamped container
+    const timestampedSuperBlockId = Lute.NewNodeID();
+    const timestampedSuperBlock = genSBElement("row", timestampedSuperBlockId);
+    timestampedSuperBlock.setAttribute("custom-timestamp", timestamp.toString());
+    timestampedSuperBlock.setAttribute("data-subtype", "ts");
+    
+    // Add timestamp header
+    const timestampParagraph = document.createElement("div");
+    const timestampParagraphId = Lute.NewNodeID();
+    timestampParagraph.setAttribute("data-node-id", timestampParagraphId);
+    timestampParagraph.setAttribute("data-type", "NodeParagraph");
+    timestampParagraph.classList.add("p");
+    timestampParagraph.innerHTML = `<div contenteditable="true" spellcheck="${window.siyuan.config.editor.spellcheck}">${currentDate}</div><div class="protyle-attr" contenteditable="false">${Constants.ZWSP}</div>`;
+    
+    // Insert container after topmost ancestor
+    insertAfterElement.insertAdjacentElement("afterend", timestampedSuperBlock);
+    timestampedSuperBlock.lastElementChild.before(timestampParagraph);
+    
+    // Transaction operations
+    const doOperations: IOperation[] = [
+        {
+            action: "insert",
+            id: timestampedSuperBlockId,
+            data: timestampedSuperBlock.outerHTML,
+            previousID: previousId,
+            parentID: parentId
+        }
+    ];
+    
+    // Add move operations for all elements
+    let prevMoveId = timestampParagraphId;
+    for (const elem of elementsToMove) {
+        doOperations.push({
+            action: "move",
+            id: elem.getAttribute("data-node-id"),
+            parentID: timestampedSuperBlockId,
+            previousID: prevMoveId
+        });
+        prevMoveId = elem.getAttribute("data-node-id");
+    }
+    
+    const undoOperations: IOperation[] = [
+        {
+            action: "delete",
+            id: timestampedSuperBlockId
+        }
+    ];
+    
+    // Add undo move operations in reverse order
+    for (let i = elementsToMove.length - 1; i >= 0; i--) {
+        const elem = elementsToMove[i];
+        const elemPrevSibling = i === 0 
+            ? insertAfterElement.getAttribute("data-node-id")
+            : elementsToMove[i - 1].getAttribute("data-node-id");
+        undoOperations.unshift({
+            action: "move",
+            id: elem.getAttribute("data-node-id"),
+            previousID: elemPrevSibling,
+            parentID: parentSuperBlock ? parentSuperBlock.getAttribute("data-node-id") : parentId
+        });
+    }
+    
+    transaction(protyle, doOperations, undoOperations);
+    
+    // Move all elements in DOM to match database state
+    // The transaction updates the database but doesn't automatically update the DOM
+    // (DOM only refreshes from database on page reload), so we need to manually
+    // move the block to keep wysiwyg and database in sync.
+    for (const elem of elementsToMove) {
+        timestampedSuperBlock.lastElementChild.before(elem);
+    }
+    
+    // Add wbr for focus after moving block.
+    // IMPORTANT: wbr must be added AFTER the block is moved to its final position
+    const editableElement = getContenteditableElement(targetElement);
+    if (editableElement) {
+        editableElement.insertAdjacentHTML("afterbegin", "<wbr>");
     }
     focusByWbr(protyle.wysiwyg.element, range);
     // scrollCenter(protyle);
