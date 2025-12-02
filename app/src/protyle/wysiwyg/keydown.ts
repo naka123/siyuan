@@ -632,14 +632,17 @@ export const keydown = (protyle: IProtyle, editorElement: HTMLElement) => {
 
             }
             // 需使用 innerText 否则表格内 br 无法传唤为 /n
+            const is_codeblock = nodeElement.parentElement.getAttribute("data-type") === "NodeCodeBlock";
+            const is_blockquote = nodeElement.parentElement.getAttribute("data-type") === "NodeBlockquote";
+            const is_superblock = nodeElement.parentElement.getAttribute("data-type") === "NodeSuperBlock";
             if (event.key === "ArrowDown" && nodeEditableElement?.innerText.trimRight().substr(position.start).indexOf("\n") === -1 && (
                 (tdElement && !tdElement.parentElement.nextElementSibling && nodeElement.getAttribute("data-type") === "NodeTable" && !getNextBlock(nodeElement)) ||
-                (nodeElement.getAttribute("data-type") === "NodeCodeBlock" && !getNextBlock(nodeElement)) ||
-                (nodeElement.parentElement.getAttribute("data-type") === "NodeBlockquote" && nodeElement.nextElementSibling.classList.contains("protyle-attr") && !getNextBlock(nodeElement.parentElement)) ||
+                (is_codeblock && !getNextBlock(nodeElement)) ||
+                ((is_blockquote||is_superblock) && nodeElement.nextElementSibling.classList.contains("protyle-attr") && !getNextBlock(nodeElement.parentElement)) ||
                 (nodeElement.parentElement.classList.contains("callout-content") && !nodeElement.nextElementSibling && !getNextBlock(nodeElement.parentElement.parentElement))
             )) {
                 // 跳出代码块和bq
-                if (nodeElement.parentElement.getAttribute("data-type") === "NodeBlockquote") {
+                if (is_blockquote || is_superblock) {
                     insertEmptyBlock(protyle, "afterend", nodeElement.parentElement.getAttribute("data-node-id"));
                 } else if (nodeElement.parentElement.classList.contains("callout-content")) {
                     insertEmptyBlock(protyle, "afterend", nodeElement.parentElement.parentElement.getAttribute("data-node-id"));
