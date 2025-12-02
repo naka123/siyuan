@@ -76,6 +76,12 @@ export const onGetConfig = (isStart: boolean, app: App) => {
     initAssets();
     setInlineStyle();
     renderSnippet();
+    const updateDPR = () => {
+        document.documentElement.style.setProperty("--dpr", String(window.devicePixelRatio));
+    };
+    updateDPR();
+    matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`)
+        .addEventListener("change", updateDPR);
     let resizeTimeout = 0;
     let firstResize = true;
     window.addEventListener("resize", () => {
