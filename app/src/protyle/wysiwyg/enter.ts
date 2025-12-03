@@ -112,55 +112,55 @@ export const enter = (blockElement: HTMLElement, range: Range, protyle: IProtyle
         return true;
     }
 
-    // bq
-    if (editableElement.textContent.replace(Constants.ZWSP, "").replace("\n", "") === "" &&
-        blockElement.nextElementSibling && blockElement.nextElementSibling.classList.contains("protyle-attr") &&
-        blockElement.parentElement.getAttribute("data-type") === "NodeBlockquote") {
-        range.insertNode(document.createElement("wbr"));
-        const topElement = getTopEmptyElement(blockElement);
-        const blockId = blockElement.getAttribute("data-node-id");
-        const topId = topElement.getAttribute("data-node-id");
-        const doInsert: IOperation = {
-            action: "insert",
-            id: blockId,
-            data: blockElement.outerHTML,
-        };
-        const undoInsert: IOperation = {
-            action: "insert",
-            id: topId,
-            data: topElement.outerHTML,
-        };
-        if (topId === blockId) {
-            doInsert.previousID = blockElement.parentElement.getAttribute("data-node-id");
-            undoInsert.previousID = blockElement.previousElementSibling.getAttribute("data-node-id");
-            blockElement.parentElement.after(blockElement);
-        } else {
-            doInsert.previousID = topElement.previousElementSibling ? topElement.previousElementSibling.getAttribute("data-node-id") : undefined;
-            doInsert.parentID = topElement.parentElement.getAttribute("data-node-id") || protyle.block.parentID;
-            undoInsert.previousID = doInsert.previousID;
-            undoInsert.parentID = doInsert.parentID;
-            topElement.after(blockElement);
-            topElement.remove();
-        }
-        transaction(protyle, [{
-            action: "delete",
-            id: topId
-        }, doInsert], [{
-            action: "delete",
-            id: blockId,
-        }, undoInsert]);
-        if (topId === blockId && blockElement.parentElement.classList.contains("sb") &&
-            blockElement.parentElement.getAttribute("data-sb-layout") === "col") {
-            turnsIntoOneTransaction({
-                protyle,
-                selectsElement: [blockElement.previousElementSibling, blockElement],
-                type: "BlocksMergeSuperBlock",
-                level: "row"
-            });
-        }
-        focusByWbr(blockElement, range);
-        return true;
-    }
+    // // bq - disabled exit on second enter
+    // if (editableElement.textContent.replace(Constants.ZWSP, "").replace("\n", "") === "" &&
+    //     blockElement.nextElementSibling && blockElement.nextElementSibling.classList.contains("protyle-attr") &&
+    //     blockElement.parentElement.getAttribute("data-type") === "NodeBlockquote") {
+    //     range.insertNode(document.createElement("wbr"));
+    //     const topElement = getTopEmptyElement(blockElement);
+    //     const blockId = blockElement.getAttribute("data-node-id");
+    //     const topId = topElement.getAttribute("data-node-id");
+    //     const doInsert: IOperation = {
+    //         action: "insert",
+    //         id: blockId,
+    //         data: blockElement.outerHTML,
+    //     };
+    //     const undoInsert: IOperation = {
+    //         action: "insert",
+    //         id: topId,
+    //         data: topElement.outerHTML,
+    //     };
+    //     if (topId === blockId) {
+    //         doInsert.previousID = blockElement.parentElement.getAttribute("data-node-id");
+    //         undoInsert.previousID = blockElement.previousElementSibling.getAttribute("data-node-id");
+    //         blockElement.parentElement.after(blockElement);
+    //     } else {
+    //         doInsert.previousID = topElement.previousElementSibling ? topElement.previousElementSibling.getAttribute("data-node-id") : undefined;
+    //         doInsert.parentID = topElement.parentElement.getAttribute("data-node-id") || protyle.block.parentID;
+    //         undoInsert.previousID = doInsert.previousID;
+    //         undoInsert.parentID = doInsert.parentID;
+    //         topElement.after(blockElement);
+    //         topElement.remove();
+    //     }
+    //     transaction(protyle, [{
+    //         action: "delete",
+    //         id: topId
+    //     }, doInsert], [{
+    //         action: "delete",
+    //         id: blockId,
+    //     }, undoInsert]);
+    //     if (topId === blockId && blockElement.parentElement.classList.contains("sb") &&
+    //         blockElement.parentElement.getAttribute("data-sb-layout") === "col") {
+    //         turnsIntoOneTransaction({
+    //             protyle,
+    //             selectsElement: [blockElement.previousElementSibling, blockElement],
+    //             type: "BlocksMergeSuperBlock",
+    //             level: "row"
+    //         });
+    //     }
+    //     focusByWbr(blockElement, range);
+    //     return true;
+    // }
 
     const position = getSelectionOffset(editableElement, protyle.wysiwyg.element, range);
     if (blockElement.parentElement.getAttribute("data-type") === "NodeListItem" &&
