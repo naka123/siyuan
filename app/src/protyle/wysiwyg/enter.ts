@@ -116,58 +116,58 @@ export const enter = (blockElement: HTMLElement, range: Range, protyle: IProtyle
         return true;
     }
 
-    // bq || callout
+    // // bq || callout - disabled exit on second enter
     const isCallout = blockElement.parentElement.classList.contains("callout-content");
     const parentBlockElement = isCallout ? blockElement.parentElement.parentElement : blockElement.parentElement;
-    if (editableElement.textContent.replace(Constants.ZWSP, "").replace("\n", "") === "" &&
-        ((blockElement.nextElementSibling && blockElement.nextElementSibling.classList.contains("protyle-attr") &&
-                blockElement.parentElement.getAttribute("data-type") === "NodeBlockquote") ||
-            (isCallout && !blockElement.nextElementSibling))) {
-        range.insertNode(document.createElement("wbr"));
-        const topElement = getTopEmptyElement(blockElement);
-        const blockId = blockElement.getAttribute("data-node-id");
-        const topId = topElement.getAttribute("data-node-id");
-        const doInsert: IOperation = {
-            action: "insert",
-            id: blockId,
-            data: blockElement.outerHTML,
-        };
-        const undoInsert: IOperation = {
-            action: "insert",
-            id: topId,
-            data: topElement.outerHTML,
-        };
-        if (topId === blockId) {
-            doInsert.previousID = parentBlockElement.getAttribute("data-node-id");
-            undoInsert.previousID = blockElement.previousElementSibling.getAttribute("data-node-id");
-            parentBlockElement.after(blockElement);
-        } else {
-            doInsert.previousID = topElement.previousElementSibling ? topElement.previousElementSibling.getAttribute("data-node-id") : undefined;
-            doInsert.parentID = topElement.parentElement.getAttribute("data-node-id") || protyle.block.parentID;
-            undoInsert.previousID = doInsert.previousID;
-            undoInsert.parentID = doInsert.parentID;
-            topElement.after(blockElement);
-            topElement.remove();
-        }
-        transaction(protyle, [{
-            action: "delete",
-            id: topId
-        }, doInsert], [{
-            action: "delete",
-            id: blockId,
-        }, undoInsert]);
-        if (topId === blockId && parentBlockElement.classList.contains("sb") &&
-            parentBlockElement.getAttribute("data-sb-layout") === "col") {
-            turnsIntoOneTransaction({
-                protyle,
-                selectsElement: [blockElement.previousElementSibling, blockElement],
-                type: "BlocksMergeSuperBlock",
-                level: "row"
-            });
-        }
-        focusByWbr(blockElement, range);
-        return true;
-    }
+    // if (editableElement.textContent.replace(Constants.ZWSP, "").replace("\n", "") === "" &&
+    //     ((blockElement.nextElementSibling && blockElement.nextElementSibling.classList.contains("protyle-attr") &&
+    //             blockElement.parentElement.getAttribute("data-type") === "NodeBlockquote") ||
+    //         (isCallout && !blockElement.nextElementSibling))) {
+    //     range.insertNode(document.createElement("wbr"));
+    //     const topElement = getTopEmptyElement(blockElement);
+    //     const blockId = blockElement.getAttribute("data-node-id");
+    //     const topId = topElement.getAttribute("data-node-id");
+    //     const doInsert: IOperation = {
+    //         action: "insert",
+    //         id: blockId,
+    //         data: blockElement.outerHTML,
+    //     };
+    //     const undoInsert: IOperation = {
+    //         action: "insert",
+    //         id: topId,
+    //         data: topElement.outerHTML,
+    //     };
+    //     if (topId === blockId) {
+    //         doInsert.previousID = parentBlockElement.getAttribute("data-node-id");
+    //         undoInsert.previousID = blockElement.previousElementSibling.getAttribute("data-node-id");
+    //         parentBlockElement.after(blockElement);
+    //     } else {
+    //         doInsert.previousID = topElement.previousElementSibling ? topElement.previousElementSibling.getAttribute("data-node-id") : undefined;
+    //         doInsert.parentID = topElement.parentElement.getAttribute("data-node-id") || protyle.block.parentID;
+    //         undoInsert.previousID = doInsert.previousID;
+    //         undoInsert.parentID = doInsert.parentID;
+    //         topElement.after(blockElement);
+    //         topElement.remove();
+    //     }
+    //     transaction(protyle, [{
+    //         action: "delete",
+    //         id: topId
+    //     }, doInsert], [{
+    //         action: "delete",
+    //         id: blockId,
+    //     }, undoInsert]);
+    //     if (topId === blockId && parentBlockElement.classList.contains("sb") &&
+    //         parentBlockElement.getAttribute("data-sb-layout") === "col") {
+    //         turnsIntoOneTransaction({
+    //             protyle,
+    //             selectsElement: [blockElement.previousElementSibling, blockElement],
+    //             type: "BlocksMergeSuperBlock",
+    //             level: "row"
+    //         });
+    //     }
+    //     focusByWbr(blockElement, range);
+    //     return true;
+    // }
 
     const position = getSelectionOffset(editableElement, protyle.wysiwyg.element, range);
     if (blockElement.parentElement.getAttribute("data-type") === "NodeListItem" &&
