@@ -2266,10 +2266,17 @@ export class Gutter {
             accelerator: window.siyuan.config.keymap.editor.general.copyText.custom,
             label: window.siyuan.languages.copyText,
             click() {
-                // 用于标识复制文本 *
-                selectsElement[0].setAttribute("data-reftext", "true");
-                focusByRange(getEditorRange(selectsElement[0]));
-                document.execCommand("copy");
+                // 复制原始 kramdown
+                const ids = selectsElement.map(el => el.getAttribute("data-node-id"));
+                Promise.all(ids.map(id => 
+                    new Promise<string>((resolve) => {
+                        fetchPost("/api/block/getBlockKramdown", {id}, (response) => {
+                            resolve(response.data.kramdown);
+                        });
+                    })
+                )).then(kramdowns => {
+                    writeText(kramdowns.join("\n\n"));
+                });
             }
         };
     }

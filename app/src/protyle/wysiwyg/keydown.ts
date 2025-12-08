@@ -1185,22 +1185,24 @@ export const keydown = (protyle: IProtyle, editorElement: HTMLElement) => {
         /// #endif
 
         if (matchHotKey(window.siyuan.config.keymap.editor.general.copyText.custom, event)) {
-            // 用于标识复制文本 *
-            if (selectText !== "") {
-                // 和复制块引用保持一致 https://github.com/siyuan-note/siyuan/issues/9093
-                getContentByInlineHTML(range, (content) => {
-                    writeText(`${content.trim()} ((${nodeElement.getAttribute("data-node-id")} "*"))`);
-                });
+            // 复制原始 kramdown
+            const selectElements = protyle.wysiwyg.element.querySelectorAll(".protyle-wysiwyg--select");
+            const ids: string[] = [];
+            if (selectElements.length > 0) {
+                selectElements.forEach(el => ids.push(el.getAttribute("data-node-id")));
             } else {
-                const selectElements = protyle.wysiwyg.element.querySelectorAll(".protyle-wysiwyg--select");
-                if (selectElements.length > 0) {
-                    selectElements[0].setAttribute("data-reftext", "true");
-                    focusByRange(getEditorRange(nodeElement));
-                    document.execCommand("copy");
-                } else {
-                    writeText(`((${nodeElement.getAttribute("data-node-id")} "*"))`);
-                }
+                ids.push(nodeElement.getAttribute("data-node-id"));
             }
+            
+            Promise.all(ids.map(id => 
+                new Promise<string>((resolve) => {
+                    fetchPost("/api/block/getBlockKramdown", {id}, (response) => {
+                        resolve(response.data.kramdown);
+                    });
+                })
+            )).then(kramdowns => {
+                writeText(kramdowns.join("\n\n"));
+            });
             event.preventDefault();
             event.stopPropagation();
             return true;
