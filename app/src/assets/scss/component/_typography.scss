@@ -147,6 +147,12 @@
     flex-direction: column;
   }
 
+  
+  div.bq[custom-ai-generated] {
+    background-color: var(--b3-font-background9);
+    color: var(--b3-theme-on-surface);
+  }
+
   h1,
   h2,
   h3,
