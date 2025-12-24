@@ -446,6 +446,14 @@ func SubTypeAbbr(n *ast.Node) string {
 		}
 	case ast.NodeCallout:
 		return n.CalloutType
+	case ast.NodeBlockquote:
+		if "" != n.IALAttr("custom-ai-generated") {
+			return "ai"
+		}
+	case ast.NodeSuperBlock:
+		if "" != n.IALAttr("custom-timestamp") {
+			return "ts"
+		}
 	}
 	return ""
 }

@@ -2621,9 +2621,10 @@ export class Gutter {
                 if (protyle.options.backlinkData) {
                     popoverHTML = `class="popover__block" data-id="${dataNodeId}"`;
                 }
+                const subtype = nodeElement.getAttribute("data-subtype");
                 const buttonHTML = type ? `<button class="ariaLabel" data-position="parentW" aria-label="${gutterTip}" 
-data-type="${type}" data-subtype="${nodeElement.getAttribute("data-subtype")}" data-node-id="${dataNodeId}">
-    <svg><use xlink:href="#${getIconByType(type, nodeElement.getAttribute("data-subtype"))}"></use></svg>
+data-type="${type}" data-subtype="${subtype}" data-node-id="${dataNodeId}">
+    <svg><use xlink:href="#${getIconByType(type, subtype)}"></use></svg>
     <span ${popoverHTML} ${protyle.disabled ? "" : 'draggable="true"'}></span>
 </button>` : "";
                 if (!hideParent) {
