@@ -47,7 +47,7 @@ import {
 import {fontEvent} from "../toolbar/Font";
 import {addSubList, listIndent, listOutdent} from "./list";
 import {newFileContentBySelect, rename, replaceFileName} from "../../editor/rename";
-import {cancelSB, insertEmptyBlock, insertTimestampedBlock, toggleAIGeneratedAttribute, jumpToParent} from "../../block/util";
+import {cancelSB, genEmptyElement, insertEmptyBlock, insertTimestampedBlock, toggleAIGeneratedAttribute, jumpToParent} from "../../block/util";
 import {isLocalPath} from "../../util/pathName";
 /// #if !MOBILE
 import {openBy, openFileById} from "../../editor/util";
@@ -1077,6 +1077,88 @@ export const keydown = (protyle: IProtyle, editorElement: HTMLElement) => {
             event.stopPropagation();
             event.preventDefault();
             return;
+        }
+
+        // Ctrl+Enter в блоке кода - выход из блока
+        if (matchHotKey("⌘↩", event) && nodeElement.getAttribute("data-type") === "NodeCodeBlock") {
+            const codeEditElement = getContenteditableElement(nodeElement) as HTMLElement;
+            if (codeEditElement) {
+                const position = getSelectionOffset(codeEditElement, protyle.wysiwyg.element, range);
+                // В начале первой строки - вставка перед блоком
+                if (position.start === 0 && range.toString() === "") {
+                    insertEmptyBlock(protyle, "beforebegin");
+                    event.stopPropagation();
+                    event.preventDefault();
+                    return;
+                }
+                // В конце последней строки - вставка после блока
+                const textLen = codeEditElement.textContent.replace(/\n$/, "").length;
+                if (position.end >= textLen && range.toString() === "") {
+                    insertEmptyBlock(protyle, "afterend");
+                    event.stopPropagation();
+                    event.preventDefault();
+                    return;
+                }
+                // Ни в начале, ни в конце - ничего не делать, но остановить обработку
+                event.stopPropagation();
+                event.preventDefault();
+                return;
+            }
+        }
+
+        // Ctrl+Enter в контейнерах: вставка пустого параграфа перед/после без перемещения курсора
+        if (matchHotKey("⌘↩", event)) {
+            const block_data_type = nodeElement.parentElement?.getAttribute("data-type");
+            const isBQ = block_data_type === "NodeBlockquote";
+            const isSB = block_data_type === "NodeSuperBlock";
+            
+            if (isBQ || isSB) {
+                const containerElement = nodeElement.parentElement;
+                const prevSibling = nodeElement.previousElementSibling;
+                const isFirstBlock = !prevSibling || !prevSibling.getAttribute("data-node-id");
+                const isLastBlock = nodeElement.nextElementSibling?.classList.contains("protyle-attr");
+                
+                // Определяем направление вставки
+                let insertBefore: boolean | null = null;
+                if (isFirstBlock && isLastBlock) {
+                    // Единственный параграф - по позиции курсора
+                    const editElement = getContenteditableElement(nodeElement) as HTMLElement;
+                    if (editElement) {
+                        const position = getSelectionOffset(editElement, protyle.wysiwyg.element, range);
+                        insertBefore = position.start <= editElement.textContent.length / 2;
+                    }
+                } else if (isFirstBlock) {
+                    insertBefore = true;
+                } else if (isLastBlock) {
+                    insertBefore = false;
+                }
+                
+                if (insertBefore !== null) {
+                    const newElement = genEmptyElement(false, false);
+                    const newId = newElement.getAttribute("data-node-id");
+                    const containerId = containerElement.getAttribute("data-node-id");
+                    
+                    insertBefore ? containerElement.before(newElement) : containerElement.after(newElement);
+                    newElement.querySelector("wbr")?.remove();
+                    
+                    transaction(protyle, [{
+                        action: "insert",
+                        data: newElement.outerHTML,
+                        id: newId,
+                        ...(insertBefore ? { nextID: containerId } : { previousID: containerId }),
+                    }], [{
+                        action: "delete",
+                        id: newId,
+                    }]);
+                    
+                    if (!insertBefore) {
+                        focusBlock(newElement);
+                    }
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
+                }
+            }
         }
 
         // 代码块语言选择 https://github.com/siyuan-note/siyuan/issues/14126
