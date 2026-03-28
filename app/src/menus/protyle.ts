@@ -1967,7 +1967,15 @@ const genImageWidthMenu = (label: string, imgElement: HTMLElement, protyle: IPro
         click() {
             nodeElement.setAttribute("updated", dayjs().format("YYYYMMDDHHmmss"));
             img3115(imgElement.parentElement.parentElement);
-            imgElement.parentElement.style.width = label === window.siyuan.languages.default ? "" : `calc(${label} - 8px)`;
+            if (label === window.siyuan.languages.default) {
+                imgElement.parentElement.style.width = "";
+            } else if (label.includes("%")) {
+                const pct = parseInt(label);
+                const adjustedPct = (pct < 100) ? (pct - 0.5) : pct;
+                imgElement.parentElement.style.width = `calc(${adjustedPct}% - 8px)`;
+            } else {
+                imgElement.parentElement.style.width = `calc(${label} - 8px)`;
+            }
             imgElement.style.height = "";
             updateTransaction(protyle, id, nodeElement.outerHTML, html);
             focusBlock(nodeElement);

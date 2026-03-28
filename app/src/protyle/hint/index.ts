@@ -187,7 +187,7 @@ ${unicode2Emoji(emoji.unicode)}</button>`;
             return;
         }
         // https://github.com/siyuan-note/siyuan/issues/5083
-        if (this.splitChar === "/" || this.splitChar === "、") {
+        if (this.splitChar === "\\" || this.splitChar === "、") {
             clearTimeout(this.timeId);
             if (this.enableSlash && !isMobile()) {
                 this.genHTML(hintSlash(key, protyle), protyle, false, "hint");
@@ -633,10 +633,10 @@ ${genHintItemHTML(item)}
             } else {
                 emoji = unicode2Emoji(value) + " ";
             }
-            insertHTML(protyle.lute.SpinBlockDOM(emoji), protyle);
-        } else if (["「「", "「『", "『「", "『『", "{{"].includes(this.splitChar) || this.splitChar === "#" || this.splitChar === ":") {
-            if (value === "") {
-                const editElement = getContenteditableElement(nodeElement);
+        insertHTML(protyle.lute.SpinBlockDOM(emoji), protyle);
+    } else if (this.splitChar === "{{" || this.splitChar === ":") {
+        if (value === "") {
+            const editElement = getContenteditableElement(nodeElement);
                 if (editElement.textContent === "") {
                     editElement.innerHTML = "<wbr>";
                     focusByWbr(editElement, range);
@@ -646,7 +646,7 @@ ${genHintItemHTML(item)}
             insertHTML(protyle.lute.SpinBlockDOM(value), protyle, false, isMobile());
             blockRender(protyle, protyle.wysiwyg.element);
             return;
-        } else if (this.splitChar === "/" || this.splitChar === "、") {
+        } else if (this.splitChar === "\\" || this.splitChar === "、") {
             this.enableExtend = true;
             if (value === "((" || value === "{{") {
                 if (value === "((") {
