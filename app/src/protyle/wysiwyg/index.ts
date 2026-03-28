@@ -2333,7 +2333,7 @@ export class WYSIWYG {
             if (!blockElement) {
                 return;
             }
-            if ([":", "(", "【", "（", "[", "{", "「", "『", "#", "/", "、"].includes(event.data)) {
+            if ([":", "(", "【", "（", "[", "{", "\\", "、"].includes(event.data)) {
                 protyle.hint.enableExtend = true;
             }
             if (event.isComposing || isComposition ||
