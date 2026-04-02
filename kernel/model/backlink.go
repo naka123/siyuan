@@ -928,6 +928,116 @@ func getContainStr(str string, strs []string) string {
 	return ""
 }
 
+type DocRefLink struct {
+	RefBlock    *Block `json:"refBlock"`
+	DefBlock    *Block `json:"defBlock"`
+	RefDocPath  string `json:"refDocPath"`
+	DefDocPath  string `json:"defDocPath"`
+	RefDocTitle string `json:"refDocTitle"`
+	DefDocTitle string `json:"defDocTitle"`
+	Content     string `json:"content"`
+	Type        string `json:"type"`
+}
+
+func GetDocRefLinks(rootID string) (incoming, outgoing []*DocRefLink) {
+	incoming = []*DocRefLink{}
+	outgoing = []*DocRefLink{}
+
+	sqlBlock := sql.GetBlock(rootID)
+	if nil == sqlBlock {
+		return
+	}
+
+	// 入链: 其他文档中引用本文档内块的 refs
+	inRefs := sql.QueryRefsByDefID(rootID, true)
+	inRefs = removeDuplicatedRefs(inRefs)
+
+	var inQueryIDs []string
+	for _, ref := range inRefs {
+		inQueryIDs = append(inQueryIDs, ref.BlockID)
+		inQueryIDs = append(inQueryIDs, ref.DefBlockID)
+	}
+	inSQLBlocks := sql.GetBlocks(inQueryIDs)
+	inBlocksCache := map[string]*sql.Block{}
+	for _, b := range inSQLBlocks {
+		if nil != b {
+			inBlocksCache[b.ID] = b
+		}
+	}
+
+	for _, ref := range inRefs {
+		refSQLBlock := inBlocksCache[ref.BlockID]
+		defSQLBlock := inBlocksCache[ref.DefBlockID]
+		if nil == refSQLBlock || nil == defSQLBlock {
+			continue
+		}
+		if refSQLBlock.RootID == rootID {
+			// 排除本文档内部的自引用
+			continue
+		}
+
+		refBlock := fromSQLBlock(refSQLBlock, "", 12)
+		defBlock := fromSQLBlock(defSQLBlock, "", 12)
+
+		link := &DocRefLink{
+			RefBlock:    refBlock,
+			DefBlock:    defBlock,
+			RefDocPath:  refSQLBlock.HPath,
+			DefDocPath:  defSQLBlock.HPath,
+			RefDocTitle: path.Base(refSQLBlock.HPath),
+			DefDocTitle: path.Base(defSQLBlock.HPath),
+			Content:     ref.Content,
+			Type:        ref.Type,
+		}
+		incoming = append(incoming, link)
+	}
+
+	// 出链: 本文档内块引用其他文档内块的 refs
+	outRefs := sql.QueryOutgoingRefsByRootID(rootID)
+	outRefs = removeDuplicatedRefs(outRefs)
+
+	var outQueryIDs []string
+	for _, ref := range outRefs {
+		outQueryIDs = append(outQueryIDs, ref.BlockID)
+		outQueryIDs = append(outQueryIDs, ref.DefBlockID)
+	}
+	outSQLBlocks := sql.GetBlocks(outQueryIDs)
+	outBlocksCache := map[string]*sql.Block{}
+	for _, b := range outSQLBlocks {
+		if nil != b {
+			outBlocksCache[b.ID] = b
+		}
+	}
+
+	for _, ref := range outRefs {
+		refSQLBlock := outBlocksCache[ref.BlockID]
+		defSQLBlock := outBlocksCache[ref.DefBlockID]
+		if nil == refSQLBlock || nil == defSQLBlock {
+			continue
+		}
+		if defSQLBlock.RootID == rootID {
+			// 排除引用本文档内部块
+			continue
+		}
+
+		refBlock := fromSQLBlock(refSQLBlock, "", 12)
+		defBlock := fromSQLBlock(defSQLBlock, "", 12)
+
+		link := &DocRefLink{
+			RefBlock:    refBlock,
+			DefBlock:    defBlock,
+			RefDocPath:  refSQLBlock.HPath,
+			DefDocPath:  defSQLBlock.HPath,
+			RefDocTitle: path.Base(refSQLBlock.HPath),
+			DefDocTitle: path.Base(defSQLBlock.HPath),
+			Content:     ref.Content,
+			Type:        ref.Type,
+		}
+		outgoing = append(outgoing, link)
+	}
+	return
+}
+
 // buildFullLinks 构建正向和反向链接列表。
 // forwardlinks：正向链接关系 refs
 // backlinks：反向链接关系 defs
