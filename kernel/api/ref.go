@@ -94,6 +94,27 @@ func getBacklinkDoc(c *gin.Context) {
 	}
 }
 
+func getDocRefLinks(c *gin.Context) {
+	ret := gulu.Ret.NewResult()
+	defer c.JSON(http.StatusOK, ret)
+
+	arg, ok := util.JsonArg(c, ret)
+	if !ok {
+		return
+	}
+
+	if nil == arg["id"] {
+		return
+	}
+
+	id := arg["id"].(string)
+	incoming, outgoing := model.GetDocRefLinks(id)
+	ret.Data = map[string]interface{}{
+		"incoming": incoming,
+		"outgoing": outgoing,
+	}
+}
+
 func getBacklink2(c *gin.Context) {
 	ret := gulu.Ret.NewResult()
 	defer c.JSON(http.StatusOK, ret)
