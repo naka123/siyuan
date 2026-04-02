@@ -957,6 +957,23 @@ func GetContainerText(container *ast.Node) string {
 	return buf.String()
 }
 
+func QueryOutgoingRefsByRootID(rootID string) (ret []*Ref) {
+	sqlStmt := "SELECT * FROM refs WHERE root_id = ?"
+	rows, err := query(sqlStmt, rootID)
+	if err != nil {
+		logging.LogErrorf("sql query [%s] failed: %s", sqlStmt, err)
+		return
+	}
+	defer rows.Close()
+	for rows.Next() {
+		ref := scanRefRows(rows)
+		if nil != ref {
+			ret = append(ret, ref)
+		}
+	}
+	return
+}
+
 func containsLimitClause(stmt string) bool {
 	return strings.Contains(strings.ToLower(stmt), " limit ") ||
 		strings.Contains(strings.ToLower(stmt), "\nlimit ") ||
