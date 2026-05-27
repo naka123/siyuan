@@ -199,6 +199,49 @@ export const insertEmptyBlock = (protyle: IProtyle, position: InsertPosition, id
     // scrollCenter(protyle);
 };
 
+export const toggleAIGeneratedAttribute = (protyle: IProtyle, nodeElement: HTMLElement) => {
+    // Найти самый верхний blockquote предок
+    let currentElement = nodeElement;
+    let topBlockquote: HTMLElement = null;
+    
+    while (currentElement && !currentElement.classList.contains("protyle-wysiwyg")) {
+        if (currentElement.getAttribute("data-type") === "NodeBlockquote") {
+            topBlockquote = currentElement;
+        }
+        currentElement = currentElement.parentElement as HTMLElement;
+    }
+    
+    if (!topBlockquote) {
+        return;
+    }
+    
+    const blockId = topBlockquote.getAttribute("data-node-id");
+    const hasAIGenerated = topBlockquote.hasAttribute("custom-ai-generated");
+    
+    // Логика data-subtype="ai":
+    // В БД хранится только custom-ai-generated. data-subtype="ai" для blockquote -
+    // производный атрибут, который проставляет kernel-рендерер при рендере блока
+    // с custom-ai-generated ∈ {"true","1"}. На сервер через setAttrs шлём только
+    // custom-ai-generated, а data-subtype="ai" зеркалим на DOM локально для
+    // мгновенного визуала (чтобы не ждать пока кернел отрендерит и пришлёт обратно).
+    const attrs: Record<string, string> = {};
+    if (hasAIGenerated) {
+        topBlockquote.removeAttribute("custom-ai-generated");
+        topBlockquote.removeAttribute("data-subtype");
+        attrs["custom-ai-generated"] = "";
+    } else {
+        topBlockquote.setAttribute("custom-ai-generated", "true");
+        topBlockquote.setAttribute("data-subtype", "ai");
+        attrs["custom-ai-generated"] = "true";
+    }
+    
+    transaction(protyle, [{
+        action: "setAttrs",
+        id: blockId,
+        data: JSON.stringify(attrs)
+    }]);
+};
+
 export const genEmptyBlock = (zwsp = true, wbr = true, string?: string) => {
     let html = "";
     if (zwsp) {
