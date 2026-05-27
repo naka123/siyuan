@@ -1435,6 +1435,8 @@ aria-label="${ariaLabel}">${getDisplayName(Lute.EscapeHTMLStr(item.name), true, 
     }
 
     private refreshPublishAccessSwitch() {
+        return;
+
         if (window.siyuan.config.readonly || window.siyuan.isPublish ||
             !this.element.classList.contains("file-tree__publish-access--active")) {
             return;
