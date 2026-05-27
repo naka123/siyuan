@@ -1432,6 +1432,8 @@ aria-label="${ariaLabel}">${getDisplayName(item.name, true, true)}</span>
     }
 
     private refreshPublishAccessSwitch() {
+        return
+
         if (window.siyuan.config.readonly || window.siyuan.isPublish) {
             return;
         }
