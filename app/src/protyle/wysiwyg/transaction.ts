@@ -386,11 +386,19 @@ export const onTransaction = (protyle: IProtyle, operation: IOperation, isUndo: 
         }
     });
     if (operation.action === "setAttrs") {
+        const data = JSON.parse(operation.data);
         protyle.wysiwyg.element.querySelectorAll(`[data-node-id="${operation.id}"]`).forEach(item => {
-            if (JSON.parse(operation.data).fold === "1") {
+            if (data.fold === "1") {
                 item.setAttribute("fold", "1");
             } else {
                 item.removeAttribute("fold");
+            }
+            if (data["custom-ai-generated"]) {
+                item.setAttribute("custom-ai-generated", data["custom-ai-generated"]);
+                item.setAttribute("data-subtype", "ai");
+            } else if (data["custom-ai-generated"] === "") {
+                item.removeAttribute("custom-ai-generated");
+                item.removeAttribute("data-subtype");
             }
         });
         return;
