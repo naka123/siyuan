@@ -1161,6 +1161,38 @@ export const keydown = (protyle: IProtyle, editorElement: HTMLElement) => {
             }
         }
 
+        // Ctrl+Enter в списке: вставка пустого параграфа после всего (верхнего) списка
+        if (matchHotKey("⌘↩", event)) {
+            const topListElement = hasTopClosestByAttribute(nodeElement, "data-type", "NodeList");
+            if (topListElement) {
+                const afterListElement = topListElement.nextElementSibling as HTMLElement;
+                if (afterListElement && afterListElement.getAttribute("data-type") === "NodeParagraph") {
+                    focusBlock(afterListElement);
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return;
+                }
+                const newElement = genEmptyElement(false, false);
+                const newId = newElement.getAttribute("data-node-id");
+                const topListId = topListElement.getAttribute("data-node-id");
+                topListElement.after(newElement);
+                newElement.querySelector("wbr")?.remove();
+                transaction(protyle, [{
+                    action: "insert",
+                    data: newElement.outerHTML,
+                    id: newId,
+                    previousID: topListId,
+                }], [{
+                    action: "delete",
+                    id: newId,
+                }]);
+                focusBlock(newElement);
+                event.preventDefault();
+                event.stopPropagation();
+                return;
+            }
+        }
+
         // 代码块语言选择 https://github.com/siyuan-note/siyuan/issues/14126
         if (matchHotKey("⌥↩", event) && selectText === "") {
             const selectElements = Array.from(protyle.wysiwyg.element.querySelectorAll(".protyle-wysiwyg--select"));
