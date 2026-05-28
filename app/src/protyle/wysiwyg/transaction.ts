@@ -1467,6 +1467,16 @@ export const transaction = (protyle: IProtyle, doOperations: IOperation[], undoO
     });
 };
 
+// 立即发送累积在 window.siyuan.transactions 中的事务，不等待 transactionsTimeout
+// 不等待服务端响应；后续的事务会通过 promiseTransaction 的回调链自动继续发送
+export const flushTransaction = () => {
+    if (!window.siyuan.transactions || window.siyuan.transactions.length === 0) {
+        return;
+    }
+    window.clearTimeout(transactionsTimeout);
+    promiseTransaction();
+};
+
 const processFold = (operation: IOperation, protyle: IProtyle) => {
     if (operation.action === "unfoldHeading" || operation.action === "foldHeading") {
         const gutterFoldElement = protyle.gutter.element.querySelector('[data-type="fold"]');

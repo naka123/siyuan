@@ -2,7 +2,7 @@ import {focusByWbr, getEditorRange} from "../protyle/util/selection";
 import {hasClosestBlock, hasClosestByClassName} from "../protyle/util/hasClosest";
 import {getContenteditableElement, getParentBlock, getTopAloneElement} from "../protyle/wysiwyg/getBlock";
 import {genListItemElement, updateListOrder} from "../protyle/wysiwyg/list";
-import {transaction, turnsIntoOneTransaction, updateTransaction} from "../protyle/wysiwyg/transaction";
+import {flushTransaction, transaction, turnsIntoOneTransaction, updateTransaction} from "../protyle/wysiwyg/transaction";
 import {scrollCenter} from "../util/highlightById";
 import {Constants} from "../constants";
 import {hideElements} from "../protyle/ui/hideElements";
@@ -337,6 +337,7 @@ export const insertTimestampedBlock = (protyle: IProtyle, nodeElement: HTMLEleme
     }
     
     transaction(protyle, doOperations, undoOperations);
+    flushTransaction();
     
     // Move all elements in DOM to match database state
     // The transaction updates the database but doesn't automatically update the DOM
@@ -397,6 +398,7 @@ export const toggleAIGeneratedAttribute = (protyle: IProtyle, nodeElement: HTMLE
         id: blockId,
         data: JSON.stringify(attrs)
     }]);
+    flushTransaction();
 };
 
 export const genEmptyBlock = (zwsp = true, wbr = true, string?: string) => {
