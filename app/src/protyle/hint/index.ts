@@ -187,7 +187,7 @@ ${unicode2Emoji(emoji.unicode)}</button>`;
             return;
         }
         // https://github.com/siyuan-note/siyuan/issues/5083
-        if (this.splitChar === "\\" || this.splitChar === "、") {
+        if (this.splitChar === "、") {
             clearTimeout(this.timeId);
             if (this.enableSlash && !isMobile()) {
                 this.genHTML(hintSlash(key, protyle), protyle, false, "hint");
@@ -646,7 +646,7 @@ ${genHintItemHTML(item)}
             insertHTML(protyle.lute.SpinBlockDOM(value), protyle, false, isMobile());
             blockRender(protyle, protyle.wysiwyg.element);
             return;
-        } else if (this.splitChar === "\\" || this.splitChar === "、") {
+        } else if (this.splitChar === "、") {
             if (value === "((" || value === "{{") {
                 this.enableExtend = true;
                 if (value === "((") {
