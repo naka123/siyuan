@@ -1162,6 +1162,7 @@ export const imgMenu = (protyle: IProtyle, range: Range, assetElement: HTMLEleme
         }).element);
         window.siyuan.menus.menu.append(new MenuItem({id: "separator_1", type: "separator"}).element);
     }
+    const dataSrc = imgElement.getAttribute("data-src");
     window.siyuan.menus.menu.append(new MenuItem({
         id: "copy",
         label: window.siyuan.languages.copy,
@@ -1174,6 +1175,18 @@ export const imgMenu = (protyle: IProtyle, range: Range, assetElement: HTMLEleme
             writeText(content);
         }
     }).element);
+    window.siyuan.menus.menu.append(new MenuItem({
+        id: "copyAsPNG",
+        label: window.siyuan.languages.copyAsPNG,
+        accelerator: window.siyuan.config.keymap.editor.general.copyBlockRef.custom,
+        icon: "iconImage",
+        click() {
+            copyPNGByLink(imgElement.getAttribute("src"));
+        }
+    }).element);
+    if (dataSrc && dataSrc.startsWith("assets/")) {
+        window.siyuan.menus.menu.append(new MenuItem(writeAssetToClipboard(dataSrc)).element);
+    }
     if (protyle.disabled) {
         window.siyuan.menus.menu.append(new MenuItem({
             id: "copyImageURL",
@@ -1411,20 +1424,9 @@ export const imgMenu = (protyle: IProtyle, range: Range, assetElement: HTMLEleme
         window.siyuan.menus.menu.append(new MenuItem({id: "separator_3", type: "separator"}).element);
         openMenu(protyle.app, imgSrc, false, false);
     }
-    const dataSrc = imgElement.getAttribute("data-src");
     if (dataSrc && dataSrc.startsWith("assets/")) {
         window.siyuan.menus.menu.append(new MenuItem(exportAsset(dataSrc)).element);
-        window.siyuan.menus.menu.append(new MenuItem(writeAssetToClipboard(dataSrc)).element);
     }
-    window.siyuan.menus.menu.append(new MenuItem({
-        id: "copyAsPNG",
-        label: window.siyuan.languages.copyAsPNG,
-        accelerator: window.siyuan.config.keymap.editor.general.copyBlockRef.custom,
-        icon: "iconImage",
-        click() {
-            copyPNGByLink(imgElement.getAttribute("src"));
-        }
-    }).element);
     if (protyle?.app?.plugins) {
         emitOpenMenu({
             plugins: protyle.app.plugins,
