@@ -1284,7 +1284,7 @@ export const keydown = (protyle: IProtyle, editorElement: HTMLElement) => {
             
             Promise.all(ids.map(id => 
                 new Promise<string>((resolve) => {
-                    fetchPost("/api/block/getBlockKramdown", {id}, (response) => {
+                    fetchPost("/api/block/getBlockKramdown", {id: id, mode:"textmark"}, (response) => {
                         resolve(response.data.kramdown);
                     });
                 })

@@ -2519,7 +2519,7 @@ export class Gutter {
                 const ids = selectsElement.map(el => el.getAttribute("data-node-id"));
                 Promise.all(ids.map(id => 
                     new Promise<string>((resolve) => {
-                        fetchPost("/api/block/getBlockKramdown", {id}, (response) => {
+                        fetchPost("/api/block/getBlockKramdown", {id: id, mode:"textmark"}, (response) => {
                             resolve(response.data.kramdown);
                         });
                     })
