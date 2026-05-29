@@ -188,7 +188,7 @@ export const hintSlash = (key: string, protyle: IProtyle) => {
         filter: [window.siyuan.languages.emoji, "emoji", "表情", "biaoqing", "bq"],
         id: "emoji",
         value: "emoji",
-        html: `<div class="b3-list-item__first"><svg class="b3-list-item__graphic"><use xlink:href="#iconEmoji"></use></svg><span class="b3-list-item__text">${window.siyuan.languages.emoji}</span><span class="b3-list-item__meta">:</span></div>`,
+        html: `<div class="b3-list-item__first"><svg class="b3-list-item__graphic"><use xlink:href="#iconEmoji"></use></svg><span class="b3-list-item__text">${window.siyuan.languages.emoji}</span><span class="b3-list-item__meta">⁚</span></div>`,
     }, {
         filter: [window.siyuan.languages.link, "link", "a", "链接", "lianjie", "lj"],
         id: "link",

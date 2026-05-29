@@ -76,7 +76,7 @@ export class Options {
                 key: "、",
                 hint: hintSlash,
             }, {
-                key: ":" // 必须在最后一个，否则块引用后的 : 不能被解析
+                key: "⁚" // 必须在最后一个，否则块引用后的 : 不能被解析
             }],
         },
         preview: {

@@ -177,7 +177,7 @@ ${unicode2Emoji(emoji.unicode)}</button>`;
             }
         }
 
-        if (this.splitChar === ":") {
+        if (this.splitChar === "⁚") {
             clearTimeout(this.timeId);
             if (key) {
                 this.genEmojiHTML(protyle, key);
@@ -625,7 +625,7 @@ ${genHintItemHTML(item)}
             }
             protyle.toolbar.range.collapse(false);
             return;
-        } else if (this.splitChar === ":") {
+        } else if (this.splitChar === "⁚") {
             addEmoji(value);
             let emoji;
             if (value.indexOf(".") > -1) {
@@ -634,7 +634,7 @@ ${genHintItemHTML(item)}
                 emoji = unicode2Emoji(value) + " ";
             }
         insertHTML(protyle.lute.SpinBlockDOM(emoji), protyle);
-    } else if (this.splitChar === "{{" || this.splitChar === ":") {
+    } else if (this.splitChar === "{{" || this.splitChar === "⁚") {
         if (value === "") {
             const editElement = getContenteditableElement(nodeElement);
                 if (editElement.textContent === "") {
@@ -734,7 +734,7 @@ ${genHintItemHTML(item)}
                 return;
             } else if (value === "emoji") {
                 range.deleteContents();
-                range.insertNode(document.createTextNode(":"));
+                range.insertNode(document.createTextNode("⁚"));
                 range.collapse(false);
                 focusByRange(range);
                 this.genEmojiHTML(protyle);
@@ -1062,9 +1062,9 @@ ${genHintItemHTML(item)}
             this.lastIndex = prevLastIndex;
         }
         // 冒号前为数字或冒号不进行emoji提示
-        if (this.splitChar === ":") {
+        if (this.splitChar === "⁚") {
             this.enableEmoji = !(/\d/.test(currentLineValue.substr(this.lastIndex - 1, 1)) ||
-                currentLineValue.substr(this.lastIndex - 1, 2) === "::");
+                currentLineValue.substr(this.lastIndex - 1, 2) === "⁚⁚");
 
         }
         const lineArray = currentLineValue.split(this.splitChar);
