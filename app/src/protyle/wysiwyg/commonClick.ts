@@ -72,6 +72,23 @@ export const commonClick = (event: MouseEvent & {
         return true;
     }
 
+    const attrSmartlinkElement = hasClosestByClassName(event.target, "protyle-attr--smartlink");
+    if (attrSmartlinkElement) {
+        if (!isM && isOnlyMeta(event)) {
+            /// #if !MOBILE
+            openGlobalSearch(protyle.app, attrSmartlinkElement.textContent.trim(), true);
+            /// #endif
+        } else {
+            if (data) {
+                openFileAttr(data, "custom-smartlink-scale", protyle);
+            } else {
+                openAttr(attrSmartlinkElement.parentElement.parentElement, "custom-smartlink-scale", protyle);
+            }
+        }
+        event.stopPropagation();
+        return true;
+    }
+
     const attrMemoElement = hasClosestByClassName(event.target, "protyle-attr--memo");
     if (attrMemoElement) {
         if (!isM && isOnlyMeta(event)) {

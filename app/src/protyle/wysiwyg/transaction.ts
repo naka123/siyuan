@@ -551,6 +551,7 @@ export const onTransaction = (protyle: IProtyle, operation: IOperation, isUndo: 
         let nameHTML = "";
         let aliasHTML = "";
         let memoHTML = "";
+        let smartlinkHTML = "";
         let avHTML = "";
         Object.keys(data.new).forEach(key => {
             attrsResult[key] = data.new[key];
@@ -565,9 +566,18 @@ export const onTransaction = (protyle: IProtyle, operation: IOperation, isUndo: 
                 memoHTML = `<div class="protyle-attr--memo ariaLabel" aria-label="${escapeHTML}" data-position="north"><svg><use xlink:href="#iconM"></use></svg></div>`;
             } else if (key === "custom-avs" && data.new["av-names"]) {
                 avHTML = `<div class="protyle-attr--av"><svg><use xlink:href="#iconDatabase"></use></svg>${data.new["av-names"]}</div>`;
+            } else if (key === "custom-smartlink-scale") {
+                if (escapeHTML) {
+                    const scale = parseFloat(escapeHTML);
+                    if (scale > 0) {
+                        smartlinkHTML = `<div class="protyle-attr--smartlink">${"↓" + scale.toFixed(2)}</div>`;
+                    } else {
+                        smartlinkHTML = `<div class="protyle-attr--smartlink">${'<svg style="vertical-align:middle;width:1.5em;height: 1.5em;"><use xlink:href="#iconUnlink"></use></svg>'}</div>`;
+                    }
+                }
             }
         });
-        let nodeAttrHTML = bookmarkHTML + nameHTML + aliasHTML + memoHTML + avHTML;
+        let nodeAttrHTML = bookmarkHTML + nameHTML + aliasHTML + memoHTML + smartlinkHTML + avHTML;
         if (protyle.block.rootID === operation.id) {
             // 文档
             if (protyle.title) {
