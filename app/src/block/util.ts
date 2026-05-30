@@ -2,7 +2,7 @@ import {focusByWbr, getEditorRange} from "../protyle/util/selection";
 import {hasClosestBlock, hasClosestByClassName} from "../protyle/util/hasClosest";
 import {getContenteditableElement, getParentBlock, getTopAloneElement} from "../protyle/wysiwyg/getBlock";
 import {genListItemElement, updateListOrder} from "../protyle/wysiwyg/list";
-import {flushTransaction, transaction, turnsIntoOneTransaction, updateTransaction} from "../protyle/wysiwyg/transaction";
+import {flushTransaction, genSmartlinkAttrHTML, transaction, turnsIntoOneTransaction, updateTransaction} from "../protyle/wysiwyg/transaction";
 import {scrollCenter} from "../util/highlightById";
 import {Constants} from "../constants";
 import {hideElements} from "../protyle/ui/hideElements";
@@ -393,6 +393,58 @@ export const toggleAIGeneratedAttribute = (protyle: IProtyle, nodeElement: HTMLE
         attrs["custom-ai-generated"] = "true";
     }
     
+    transaction(protyle, [{
+        action: "setAttrs",
+        id: blockId,
+        data: JSON.stringify(attrs)
+    }]);
+    flushTransaction();
+};
+
+export const toggleSmartlinkScaleAttribute = (protyle: IProtyle, nodeElement: HTMLElement) => {
+    // Если текущий блок не является (или не внутри) blockquote с custom-ai-generated (bq ai),
+    // подняться вверх до самого верхнего такого blockquote
+    let currentElement = nodeElement;
+    let targetElement: HTMLElement = null;
+    while (currentElement && !currentElement.classList.contains("protyle-wysiwyg")) {
+        if (currentElement.getAttribute("data-type") === "NodeBlockquote" && currentElement.hasAttribute("custom-ai-generated")) {
+            targetElement = currentElement;
+        }
+        currentElement = currentElement.parentElement as HTMLElement;
+    }
+
+    if (!targetElement) {
+        return;
+    }
+
+    const blockId = targetElement.getAttribute("data-node-id");
+    const hasSmartlinkScale = targetElement.hasAttribute("custom-smartlink-scale");
+    const attrs: Record<string, string> = {};
+    if (hasSmartlinkScale) {
+        targetElement.removeAttribute("custom-smartlink-scale");
+        attrs["custom-smartlink-scale"] = "";
+    } else {
+        targetElement.setAttribute("custom-smartlink-scale", "-1");
+        attrs["custom-smartlink-scale"] = "-1";
+    }
+
+    // Зеркалим .protyle-attr--smartlink на DOM локально для мгновенного визуала
+    // (вставка перед .protyle-attr--refcount если он есть, иначе в конец .protyle-attr)
+    const attrElements = targetElement.querySelectorAll(".protyle-attr");
+    const attrElement = attrElements[attrElements.length - 1];
+    if (attrElement) {
+        attrElement.querySelector(".protyle-attr--smartlink")?.remove();
+        const smartlinkHTML = genSmartlinkAttrHTML(attrs["custom-smartlink-scale"]);
+        if (smartlinkHTML) {
+            const refElement = attrElement.querySelector(".protyle-attr--refcount");
+            if (refElement) {
+                refElement.insertAdjacentHTML("beforebegin", smartlinkHTML);
+            } else {
+                attrElement.insertAdjacentHTML("beforeend", smartlinkHTML);
+            }
+        }
+    }
+
     transaction(protyle, [{
         action: "setAttrs",
         id: blockId,

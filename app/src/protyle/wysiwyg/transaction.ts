@@ -380,6 +380,22 @@ const updateBlock = (updateElements: Element[], protyle: IProtyle, operation: IO
     updateEmbed(protyle, operation);
 };
 
+// 生成 custom-smartlink-scale 对应的 .protyle-attr--smartlink HTML，与 kernel(lute) 渲染保持一致
+export const genSmartlinkAttrHTML = (scaleValue: string): string => {
+    const escapeHTML = Lute.EscapeHTMLStr(scaleValue);
+    if (!escapeHTML) {
+        return "";
+    }
+    const scale = parseFloat(escapeHTML);
+    if (isNaN(scale)) {
+        return "";
+    }
+    if (scale > 0) {
+        return `<div class="protyle-attr--smartlink">↓${scale.toFixed(2)}</div>`;
+    }
+    return `<div class="protyle-attr--smartlink"><svg style="vertical-align:middle;width:1.5em;height: 1.5em;"><use xlink:href="#iconUnlink"></use></svg></div>`;
+};
+
 // 用于推送和撤销
 export const onTransaction = (protyle: IProtyle, operation: IOperation, isUndo: boolean) => {
     if (protyle.wysiwyg.element.firstElementChild?.classList.contains("protyle-password")) {
@@ -567,14 +583,7 @@ export const onTransaction = (protyle: IProtyle, operation: IOperation, isUndo: 
             } else if (key === "custom-avs" && data.new["av-names"]) {
                 avHTML = `<div class="protyle-attr--av"><svg><use xlink:href="#iconDatabase"></use></svg>${data.new["av-names"]}</div>`;
             } else if (key === "custom-smartlink-scale") {
-                if (escapeHTML) {
-                    const scale = parseFloat(escapeHTML);
-                    if (scale > 0) {
-                        smartlinkHTML = `<div class="protyle-attr--smartlink">${"↓" + scale.toFixed(2)}</div>`;
-                    } else {
-                        smartlinkHTML = `<div class="protyle-attr--smartlink">${'<svg style="vertical-align:middle;width:1.5em;height: 1.5em;"><use xlink:href="#iconUnlink"></use></svg>'}</div>`;
-                    }
-                }
+                smartlinkHTML = genSmartlinkAttrHTML(data.new[key]);
             }
         });
         let nodeAttrHTML = bookmarkHTML + nameHTML + aliasHTML + memoHTML + smartlinkHTML + avHTML;
