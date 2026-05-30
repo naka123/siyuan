@@ -9,6 +9,7 @@ import {highlightRender} from "../render/highlightRender";
 import {fetchPost} from "../../util/fetch";
 import {isDynamicRef, isFileAnnotation} from "../../util/functions";
 import {insertHTML} from "./insertHTML";
+import {transaction, flushTransaction} from "../wysiwyg/transaction";
 import {scrollCenter} from "../../util/highlightById";
 import {hideElements} from "../ui/hideElements";
 import {avRender} from "../render/av/render";
@@ -246,6 +247,29 @@ const readLocalFile = async (protyle: IProtyle, localFiles: ILocalFiles[]) => {
     uploadLocalFiles(localFiles, protyle, true);
 };
 
+const parseAIChatSource = (url: string): { isAIChat: boolean; source: string } => {
+    if (!url) {
+        return {isAIChat: false, source: ""};
+    }
+    try {
+        const u = new URL(url);
+        // Cursor/VSCode webview
+        if (u.protocol === "vscode-file:" &&
+            u.pathname.endsWith("/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html")) {
+            return {isAIChat: true, source: "cursor"};
+        }
+        // локальный AI-вебчат, идент берётся только из hash (conv_id)
+        const isLocalhostWithPort = (u.hostname === "localhost" || /^127\.0\.0\.\d+$/.test(u.hostname)) && u.port === "7862";
+        if (isLocalhostWithPort || u.hostname === "gpt-ai.lan") {
+            const convId = new URLSearchParams(u.hash.replace(/^#/, "")).get("conv_id");
+            return {isAIChat: true, source: convId ? `gra_conv_id=${convId}` : ""};
+        }
+    } catch {
+        // ignore
+    }
+    return {isAIChat: false, source: ""};
+};
+
 export const paste = async (protyle: IProtyle, event: (ClipboardEvent | DragEvent | IClipboardData) & {
     target: HTMLElement
 }) => {
@@ -279,6 +303,24 @@ export const paste = async (protyle: IProtyle, event: (ClipboardEvent | DragEven
         siyuanHTML = event.siyuanHTML;
         files = event.files;
     }
+
+    let sourceURL = "";
+    /// #if !BROWSER
+    if ("clipboardData" in event) {
+        const {clipboard} = require("electron");
+        const buf = clipboard.readBuffer("HTML Format"); // Windows CF_HTML
+        if (buf && buf.length > 0) {
+            // CF_HTML объявлен как UTF-8
+            const cfHTML = buf.toString("utf8");
+            const sourceURLMatch = cfHTML.match(/SourceURL:(.+?)(?:\r?\n|$)/);
+            if (sourceURLMatch) {
+                sourceURL = sourceURLMatch[1].trim();
+            }
+        }
+    }
+    /// #endif
+    const aiChatSource = parseAIChatSource(sourceURL);
+    console.log(aiChatSource);
 
     // Improve the pasting of selected text in PDF rectangular annotation https://github.com/siyuan-note/siyuan/issues/11629
     textPlain = textPlain.replace(/\r\n|\r|\u2028|\u2029/g, "\n");
@@ -546,10 +588,68 @@ export const paste = async (protyle: IProtyle, event: (ClipboardEvent | DragEven
                 }
                 return;
             }
+            const closestBlockquote = hasClosestByAttribute(event.target, "data-type", "NodeBlockquote");
+            // ai-вставка в свежий пустой blockquote (внутри один пустой параграф с курсором) — помечаем сам blockquote как ai-generated
+            let isFreshEmptyBlockquote = false;
+            if (closestBlockquote) {
+                const blockquoteChildren = closestBlockquote.querySelectorAll("[data-node-id]");
+                if (blockquoteChildren.length === 1 && blockquoteChildren[0].getAttribute("data-type") === "NodeParagraph") {
+                    const editable = getContenteditableElement(blockquoteChildren[0] as HTMLElement);
+                    isFreshEmptyBlockquote = !!editable && editable.textContent === "";
+                }
+            }
+            const wrapAIBlockquote = aiChatSource.isAIChat && !closestBlockquote;
+            if (aiChatSource.isAIChat && closestBlockquote && isFreshEmptyBlockquote) {
+                const aiAttrs: IObject = {
+                    "custom-ai-generated": "true",
+                    "data-subtype": "ai"
+                };
+                closestBlockquote.setAttribute("custom-ai-generated", "true");
+                closestBlockquote.setAttribute("data-subtype", "ai");
+                if (aiChatSource.source) {
+                    closestBlockquote.setAttribute("custom-ai-source", aiChatSource.source);
+                    aiAttrs["custom-ai-source"] = aiChatSource.source;
+                }
+                transaction(protyle, [{
+                    action: "setAttrs",
+                    id: closestBlockquote.getAttribute("data-node-id"),
+                    data: JSON.stringify(aiAttrs)
+                }]);
+                flushTransaction();
+            } else if (aiChatSource.isAIChat && aiChatSource.source && closestBlockquote) {
+                const sources = (closestBlockquote.getAttribute("custom-ai-source") || "").split("\n").filter(s => s);
+                if (!sources.includes(aiChatSource.source)) {
+                    sources.push(aiChatSource.source);
+                    const newSourceValue = sources.join("\n");
+                    closestBlockquote.setAttribute("custom-ai-source", newSourceValue);
+                    transaction(protyle, [{
+                        action: "setAttrs",
+                        id: closestBlockquote.getAttribute("data-node-id"),
+                        data: JSON.stringify({"custom-ai-source": newSourceValue})
+                    }]);
+                    flushTransaction();
+                }
+            }
+            const aiBlockDOMArg = wrapAIBlockquote ? `<blockquote>${tempElement.innerHTML}</blockquote>` : tempElement.innerHTML;
             fetchPost("/api/lute/html2BlockDOM", {
-                dom: tempElement.innerHTML
+                dom: aiBlockDOMArg
             }, (response) => {
-                insertHTML(response.data, protyle, false, false, true);
+                let blockDOM = response.data;
+                if (wrapAIBlockquote) {
+                    const aiTemp = document.createElement("template");
+                    aiTemp.innerHTML = blockDOM;
+                    Array.from(aiTemp.content.children).forEach((child) => {
+                        if (child.getAttribute("data-type") === "NodeBlockquote") {
+                            child.setAttribute("custom-ai-generated", "true");
+                            child.setAttribute("data-subtype", "ai");
+                            if (aiChatSource.source) {
+                                child.setAttribute("custom-ai-source", aiChatSource.source);
+                            }
+                        }
+                    });
+                    blockDOM = aiTemp.innerHTML;
+                }
+                insertHTML(blockDOM, protyle, false, false, true);
                 protyle.wysiwyg.element.querySelectorAll('[data-type~="block-ref"]').forEach(item => {
                     if (item.textContent === "") {
                         fetchPost("/api/block/getRefText", {id: item.getAttribute("data-id")}, (response) => {
