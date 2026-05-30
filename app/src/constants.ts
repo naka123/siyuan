@@ -546,6 +546,7 @@ export abstract class Constants {
                 aiWriting: {default: "", custom: ""},
                 insertTimestampedBlock: {default: "⌥⇧D", custom: "⌥⇧D"},
                 toggleAIGenerated: {default: "⌥⇧G", custom: "⌥⇧G"},
+                toggleSmartlinkScale: {default: "⌥⇧Q", custom: "⌥⇧Q"},
                 openInNewTab: {default: "", custom: ""},
             },
             insert: {

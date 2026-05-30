@@ -48,7 +48,7 @@ import {
 import {fontEvent} from "../toolbar/Font";
 import {addSubList, listIndent, listOutdent} from "./list";
 import {newFileContentBySelect, rename, replaceFileName} from "../../editor/rename";
-import {cancelSB, genEmptyElement, insertEmptyBlock, insertTimestampedBlock, toggleAIGeneratedAttribute, jumpToParent} from "../../block/util";
+import {cancelSB, genEmptyElement, insertEmptyBlock, insertTimestampedBlock, toggleAIGeneratedAttribute, toggleSmartlinkScaleAttribute, jumpToParent} from "../../block/util";
 import {isLocalPath} from "../../util/pathName";
 /// #if !MOBILE
 import {openBy, openFileById} from "../../editor/util";
@@ -1999,6 +1999,13 @@ export const keydown = (protyle: IProtyle, editorElement: HTMLElement) => {
             event.preventDefault();
             event.stopPropagation();
             toggleAIGeneratedAttribute(protyle, nodeElement);
+            return;
+        }
+
+        if (!event.repeat && matchHotKey(window.siyuan.config.keymap.editor.general.toggleSmartlinkScale.custom, event)) {
+            event.preventDefault();
+            event.stopPropagation();
+            toggleSmartlinkScaleAttribute(protyle, nodeElement);
             return;
         }
 
