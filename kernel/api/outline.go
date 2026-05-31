@@ -49,7 +49,7 @@ func getDocOutline(c *gin.Context) {
 		return
 	}
 
-	headings, err := model.CollectTimestampedAIBlocks(rootID, preview)
+	headings, err := model.Outline(rootID, preview)
 	if err != nil {
 		ret.Code = 1
 		ret.Msg = err.Error()
