@@ -357,6 +357,37 @@ export const insertTimestampedBlock = (protyle: IProtyle, nodeElement: HTMLEleme
     // scrollCenter(protyle);
 };
 
+export const isTimestampTextMatch = (nodeElement: HTMLElement) => {
+    const timestamp = nodeElement.getAttribute("custom-timestamp");
+    const attrText = dayjs(parseInt(timestamp) * 1000).format("DD-MMM-YY HH:mm");
+    const firstParagraph = nodeElement.firstElementChild as HTMLElement;
+    const paragraphText = getContenteditableElement(firstParagraph)?.textContent || "";
+    return attrText === paragraphText;
+};
+
+export const syncTimestamp = (protyle: IProtyle, nodeElement: HTMLElement, direction: "text" | "attr") => {
+    const firstParagraph = nodeElement.firstElementChild as HTMLElement;
+    const editableElement = getContenteditableElement(firstParagraph);
+    if (!editableElement) {
+        return;
+    }
+    if (direction === "text") {
+        const timestamp = nodeElement.getAttribute("custom-timestamp");
+        const oldHTML = firstParagraph.outerHTML;
+        editableElement.textContent = dayjs(parseInt(timestamp) * 1000).format("DD-MMM-YY HH:mm");
+        updateTransaction(protyle, firstParagraph.getAttribute("data-node-id"), firstParagraph.outerHTML, oldHTML);
+    } else {
+        const timestamp = dayjs(editableElement.textContent, "DD-MMM-YY HH:mm").unix();
+        nodeElement.setAttribute("custom-timestamp", timestamp.toString());
+        transaction(protyle, [{
+            action: "setAttrs",
+            id: nodeElement.getAttribute("data-node-id"),
+            data: JSON.stringify({"custom-timestamp": timestamp.toString()})
+        }]);
+    }
+    flushTransaction();
+};
+
 export const toggleAIGeneratedAttribute = (protyle: IProtyle, nodeElement: HTMLElement) => {
     // Найти самый верхний blockquote предок
     let currentElement = nodeElement;

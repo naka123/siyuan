@@ -37,7 +37,7 @@ import {blockRender} from "../render/blockRender";
 import {getContenteditableElement, getParentBlock, getTopAloneElement, isNotEditBlock} from "../wysiwyg/getBlock";
 import * as dayjs from "dayjs";
 import {fetchPost} from "../../util/fetch";
-import {cancelSB, genEmptyElement, getLangByType, insertEmptyBlock, jumpToParent,} from "../../block/util";
+import {cancelSB, genEmptyElement, getLangByType, insertEmptyBlock, isTimestampTextMatch, jumpToParent, syncTimestamp,} from "../../block/util";
 import {countBlockWord} from "../../layout/status";
 import {Constants} from "../../constants";
 import {mathRender} from "../render/mathRender";
@@ -1331,16 +1331,33 @@ export class Gutter {
                 submenu: turnIntoSubmenu
             }).element);
         }
-        if (!protyle.disabled && !nodeElement.classList.contains("hr")) {
+        // if (!protyle.disabled && !nodeElement.classList.contains("hr")) {
+        //     window.siyuan.menus.menu.append(new MenuItem({
+        //         id: "ai",
+        //         icon: "iconSparkles",
+        //         label: window.siyuan.languages.ai,
+        //         accelerator: window.siyuan.config.keymap.editor.general.ai.custom,
+        //         click() {
+        //             AIActions([nodeElement], protyle);
+        //         }
+        //     }).element);
+        // }
+        if (subType === "ts" && !isTimestampTextMatch(nodeElement as HTMLElement)) {
             window.siyuan.menus.menu.append(new MenuItem({
-                id: "ai",
-                icon: "iconSparkles",
-                label: window.siyuan.languages.ai,
-                accelerator: window.siyuan.config.keymap.editor.general.ai.custom,
+                id: "syncTimestampText",
+                label: "Синхронизировать текст",
                 click() {
-                    AIActions([nodeElement], protyle);
+                    syncTimestamp(protyle, nodeElement as HTMLElement, "text");
                 }
             }).element);
+            window.siyuan.menus.menu.append(new MenuItem({
+                id: "syncTimestampAttr",
+                label: "Синхронизировать атрибут",
+                click() {
+                    syncTimestamp(protyle, nodeElement as HTMLElement, "attr");
+                }
+            }).element);
+            window.siyuan.menus.menu.append(new MenuItem({id: "separator_testTs", type: "separator"}).element);
         }
 
         const copyMenu = (copySubMenu([id], true, nodeElement) as IMenu[]).concat([{
